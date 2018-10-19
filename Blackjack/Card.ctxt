@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.params=suit\ rank
+comment0.target=Card(java.lang.String,\ java.lang.String)
+comment0.text=\n\ Constructs\ the\ card\ class\n\ \n\ @param\ s\ The\ suit\ of\ the\ card\n\ @param\ r\ The\ rank\ of\ the\ card\n\ \n
+comment1.params=
+comment1.target=java.lang.String\ getRank()
+comment1.text=\n\ This\ method\ will\ return\ the\ rank\ of\ the\ card\n\ \n\ @return\ rank\n
+comment2.params=
+comment2.target=java.lang.String\ getSuit()
+comment2.text=\n\ This\ method\ will\ return\ the\ suit\ of\ the\ card\n\ \n\ @return\ suit\n
+comment3.params=
+comment3.target=void\ changeAce()
+comment3.text=\n\ This\ method\ will\ change\ the\ value\ of\ an\ ace\ to\ 1\n
+comment4.params=
+comment4.target=int\ getValue()
+comment5.params=
+comment5.target=java.lang.String\ toString()
+comment5.text=\n\ This\ method\ will\ create\ a\ toString\ to\ print\ out\n\ the\ suit,\ rank,\ and\ value\n\ \n\ @return\ twine\n
+numComments=6

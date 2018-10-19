@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=n
+comment0.target=Shoe(int)
+comment0.text=\n\ Constructs\ the\ shoe\ class\n\ \n\ @param\ n\ The\ number\ of\ decks\ in\ the\ shoe\n
+comment1.params=
+comment1.target=java.util.ArrayList\ getShoe()
+comment1.text=\n\ This\ method\ will\ get\ and\ return\ the\ shoe\n\ \n\ @return\ super.getDeck()\n
+comment2.params=
+comment2.target=int\ getNumDecks()
+comment2.text=\n\ This\ method\ will\ get\ the\ number\ of\ decks\n\ in\ the\ shoe\n\ \n\ @return\ numDecks\n
+comment3.params=
+comment3.target=void\ shuffle()
+comment3.text=\n\ This\ method\ will\ shuffle\ all\ of\ the\ cards\ in\ the\ shoe\n
+comment4.params=
+comment4.target=void\ resetShuffle()
+comment4.text=\n\ This\ method\ will\ reset\ the\ deck\ \n\ and\ shuffle\ the\ cards\ when\ the\ \n\ amount\ of\ cards\ in\ a\ deck\ is\ less\ than\ 20.\n
+comment5.params=
+comment5.target=java.lang.String\ toString()
+comment5.text=\n\ This\ method\ creates\ a\ toString\ that\ will\n\ print\ out\ the\ shoe\n\ \n\ @return\ wire\n
+numComments=6

@@ -1,0 +1,23 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Deck()
+comment0.text=\n\ Constructs\ the\ deck\ class\n\ Creates\ a\ deck\ with\ cards\ in\ the\ deck\n\ in\ the\ correct\ order\n
+comment1.params=
+comment1.target=void\ fillDeck()
+comment1.text=\n\ This\ method\ fills\ the\ deck\n
+comment2.params=
+comment2.target=Card\ drawCard()
+comment2.text=\n\ This\ method\ will\ create\ a\ new\ array\ list\n\ The\ card\ at\ the\ top\ of\ the\ deck\ will\ be\ added\n\ to\ the\ new\ array\ list,\ and\ then\ that\ card\n\ will\ be\ removed\ from\ the\ deck\n\ \n\ @return\ draw\n
+comment3.params=
+comment3.target=java.util.ArrayList\ getDeck()
+comment3.text=\n\ This\ method\ will\ return\ the\ deck\n\ \n\ @return\ deck\n
+comment4.params=
+comment4.target=void\ shuffle()
+comment4.text=\n\ This\ method\ will\ shuffle\ the\ deck\ of\ cards\n
+comment5.params=
+comment5.target=void\ resetShuffle()
+comment5.text=\n\ This\ method\ will\ reset\ the\ deck\ \n\ and\ shuffle\ the\ cards\ when\ the\ \n\ amount\ of\ cards\ in\ a\ deck\ is\ less\ than\ 20.\n
+comment6.params=
+comment6.target=java.lang.String\ toString()
+comment6.text=\n\ This\ method\ creates\ a\ toString\ that\ will\n\ print\ out\ the\ deck\n\ \n\ @return\ thread\n
+numComments=7
