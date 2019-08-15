@@ -5,17 +5,23 @@
     <head>
         <title> To-Do List </title>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link type="text/css" rel="stylesheet" href="../node_modules/materialize-css/dist/css/materialize.css"  media="screen,projection"/>
+        <link rel="stylesheet" href="../styles/home.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script type="text/javascript" src="../node_modules/materialize-css/dist/js/materialize.js"></script>
 
     </head>
 
-    <body>
+    <body onload="updateDate();">
 
-        <nav>
+        <nav id="headerNav">
             <div class="nav-wrapper">
                 <a class="brand-logo center"> To-Do List </a>
+                <span id="dateSection"> </span>
             </div>
         </nav>
+        <button class="waves-effect waves-light btn" id="addButtonHome" onclick="openAddWindow();"> <i style="vertical-align: middle" class="material-icons right">add</i> Add Item to Schedule </button>
         <ul id="scheduleList"></ul>
 
         <script>
@@ -25,14 +31,21 @@
             const ul = document.getElementById("scheduleList");
 
             // add item
-            ipcRenderer.on('scheduleItem:add', function(e, item) {
+            ipcRenderer.on('scheduleItem:add', function(e, item, time) {
                 ul.classList.add("collection");
                 var li = document.createElement('li');
-                li.classList.add("collection-item")
-                var liContent = document.createTextNode(item);
+                li.classList.add("collection-item");
+                li.title = "Double-click to delete";
+                var liContent = document.createTextNode("Event: " +  item + ", Time: " + time);
+                var trashIcon = document.createElement('i');
+                trashIcon.classList.add('material-icons', 'trash-icon');
+                trashIcon.innerHTML = 'delete';
+                trashIcon.onclick = function() { removeLiItem(li); }
 
                 li.appendChild(liContent);
+                li.appendChild(trashIcon);
                 ul.appendChild(li);
+
             });
 
             // remove all items
@@ -44,6 +57,7 @@
             // remove single item
             ul.addEventListener('dblclick', removeSingleItem);
 
+            // for doubleclick
             function removeSingleItem(e) {
                 e.target.remove();
                 if(ul.children.length == 0) {
@@ -51,7 +65,29 @@
                 }
             }
 
-        </script>
+            // for clicking on trash icon
+            function removeLiItem(li) {
+                li.remove();
+                if(ul.children.length == 0) {
+                    ul.classList.remove('collection')
+                }
+            }
 
+            function openAddWindow() {
+                ipcRenderer.send('scheduleItem:open');
+            }
+
+            function updateDate() {
+
+                var date = new Date();
+                var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+                var dateString = days[date.getDay()] + ", " + months[date.getMonth()] + date.getDate();
+                document.getElementById("dateSection").innerHTML = dateString;
+            }
+
+        </script>
     </body>
 </html>

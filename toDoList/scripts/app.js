@@ -45,8 +45,8 @@ function createAddWindow() {
 
     // create add window
     addWindow = new BrowserWindow({
-        width: 300,
-        height: 200,
+        width: 400,
+        height: 300,
         title: 'Add Shopping List Item',
         webPreferences: { nodeIntegration: true }
     });
@@ -65,9 +65,14 @@ function createAddWindow() {
 }
 
 // catch scheduleItem:add
-ipcMain.on('scheduleItem:add', function(e, item) {
-    mainWindow.webContents.send('scheduleItem:add', item);
+ipcMain.on('scheduleItem:add', function(e, item, time) {
+    mainWindow.webContents.send('scheduleItem:add', item, time);
     addWindow.close();
+});
+
+// catch scheduleItem:open
+ipcMain.on('scheduleItem:open', function() {
+    createAddWindow();
 });
 
 // making a menu template

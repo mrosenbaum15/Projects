@@ -3,8 +3,10 @@
     <head>
         <title> Add Shopping List Item </title>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link type="text/css" rel="stylesheet" href="../node_modules/materialize-css/dist/css/materialize.css"  media="screen,projection"/>
         <link rel="stylesheet" href="../styles/addWindow.css">
+
+        <script type="text/javascript" src="../node_modules/materialize-css/dist/js/materialize.js"></script>
 
     </head>
 
@@ -15,8 +17,13 @@
         <div class="container">
             <form id="addItemForm">
                 <div>
-                    <label> Enter Item </label>
+
                     <input class="button" type="text" id="addItem" autofocus>
+                    <label for="addItem"> Enter Event </label>
+
+                    <input class="timepicker" type="text" id="addTime" onclick= autofocus>
+                    <label for="addTime"> Enter time </label>
+
                 </div>
                 <button id="addButton" type="submit" class="btn waves-effect waves-light"> Add Item </button>
             </form>
@@ -32,7 +39,14 @@
             function submitForm(e) {
                 e.preventDefault();
                 const scheduleItem = document.getElementById('addItem').value;
-                ipcRenderer.send('scheduleItem:add', scheduleItem);
+                const scheduleTime = document.getElementById('addTime').value;
+                ipcRenderer.send('scheduleItem:add', scheduleItem, scheduleTime);
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    var elems = document.querySelectorAll('.timepicker');
+                    var instances = M.Timepicker.init(elems);
+                });
+
             }
 
         </script>
