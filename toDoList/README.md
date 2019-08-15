@@ -12,4 +12,7 @@
 
     1. In scripts/app.js, uncomment line 10 (// process.env.NODE_ENV = 'production';) to set   
     production mode to on, disabling developer tools
-    2. Run 'npm build package-SYSTEM', but replace SYSTEM with mac, linux, or win depending on the operating system you are using
+    2. Run 'npm run package-SYSTEM', but replace SYSTEM with mac, linux, or win depending on the operating system you are using
+    3. There will be a new folder called release-build, enter that
+        3a. If on windows, the file named Todo.exe is the desktop app in production
+        3b. If on mac, the file named Todo is the desktop app in production
