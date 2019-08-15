@@ -1,0 +1,133 @@
+const electron = require('electron');
+const url = require('url');
+const path = require('path');
+
+const isMacPlatform = (process.platform == 'darwin');
+
+const {app, BrowserWindow, Menu, ipcMain} = electron;
+
+// set environment
+// process.env.NODE_ENV = 'production';
+
+let mainWindow, addWindow;
+
+app.on('ready', function() {
+
+    // create mainWindow
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+
+    // load in html
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname, '../views/home.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    // Quit app when closed
+    mainWindow.on('closed', function() {
+        app.quit();
+    })
+
+    // build a menu using mainMenuTemplate
+    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+
+    // insert menu
+    Menu.setApplicationMenu(mainMenu);
+
+});
+
+// handle createAddWindow
+function createAddWindow() {
+
+    // create add window
+    addWindow = new BrowserWindow({
+        width: 300,
+        height: 200,
+        title: 'Add Shopping List Item',
+        webPreferences: { nodeIntegration: true }
+    });
+
+    // load in html
+    addWindow.loadURL(url.format({
+        pathname: path.join(__dirname, '../views/addWindow.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    // Garbage collection handle
+    addWindow.on('close', function() {
+        addWindow = null;
+    });
+}
+
+// catch scheduleItem:add
+ipcMain.on('scheduleItem:add', function(e, item) {
+    mainWindow.webContents.send('scheduleItem:add', item);
+    addWindow.close();
+});
+
+// making a menu template
+const mainMenuTemplate = [
+    {
+        label: 'File',
+        submenu: [
+
+            {
+                label: 'Add item',
+                accelerator: isMacPlatform ? 'Command+Shift+A' : 'Ctrl+Shift+A',
+                click() {
+                    createAddWindow();
+                }
+            },
+
+            {
+                label: 'Clear all items',
+                accelerator: isMacPlatform ? 'Command+Shift+C' : 'Ctrl+Shift+C',
+                click() {
+                    mainWindow.webContents.send('scheduleItem:clear');
+                }
+            },
+
+            {
+                label: 'Quit',
+                accelerator: isMacPlatform ? 'Command+Q': 'Ctrl+Q',
+                click() {
+                    app.quit();
+                }
+            }
+
+        ]
+    }
+];
+
+// If OSX, add empty object to menu
+if(isMacPlatform){
+  mainMenuTemplate.unshift({
+      label: ''
+  });
+}
+
+// Add dev tools if not in production mode
+if(process.env.NODE_ENV !== 'production') {
+    mainMenuTemplate.push({
+        label: 'Developer Tools',
+        submenu: [
+
+            {
+                role: 'Reload'
+            },
+
+            {
+                label: 'Toggle DevTools',
+                accelerator: isMacPlatform ? 'Command+Shift+I' : 'Ctrl+Shift+I',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        ]
+    })
+}
