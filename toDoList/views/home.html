@@ -10,6 +10,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <script type="text/javascript" src="../node_modules/materialize-css/dist/js/materialize.js"></script>
+        <script type="text/javascript" src="../scripts/home.js"></script>
 
     </head>
 
@@ -29,22 +30,33 @@
             const electron = require('electron');
             const {ipcRenderer} = electron;
             const ul = document.getElementById("scheduleList");
+            let currentListElems = new Array();
+
+            addPastElems();
 
             // add item
             ipcRenderer.on('scheduleItem:add', function(e, item, time) {
+
                 ul.classList.add("collection");
                 var li = document.createElement('li');
                 li.classList.add("collection-item");
-                li.title = "Double-click to delete";
-                var liContent = document.createTextNode("Event: " +  item + ", Time: " + time);
+                var liText = "Event: " +  item + ", Time: " + time;
+                var liContent = document.createTextNode(liText);
                 var trashIcon = document.createElement('i');
                 trashIcon.classList.add('material-icons', 'trash-icon');
                 trashIcon.innerHTML = 'delete';
-                trashIcon.onclick = function() { removeLiItem(li); }
+                trashIcon.onclick = function() { removeLiItem(li, liText); }
 
                 li.appendChild(liContent);
                 li.appendChild(trashIcon);
                 ul.appendChild(li);
+                currentListElems.push(liText);
+
+                var listElems = document.querySelectorAll('li');
+
+                for(var i = 0; i < listElems.length; ++i) {
+                    console.log(listElems[i].getElementsByClassName('trash-icon')[0].onclick);
+                }
 
             });
 
@@ -54,40 +66,11 @@
                 ul.classList.remove('collection')
             })
 
-            // remove single item
-            ul.addEventListener('dblclick', removeSingleItem);
-
-            // for doubleclick
-            function removeSingleItem(e) {
-                e.target.remove();
-                if(ul.children.length == 0) {
-                    ul.classList.remove('collection')
-                }
-            }
-
-            // for clicking on trash icon
-            function removeLiItem(li) {
-                li.remove();
-                if(ul.children.length == 0) {
-                    ul.classList.remove('collection')
-                }
-            }
-
-            function openAddWindow() {
-                ipcRenderer.send('scheduleItem:open');
-            }
-
-            function updateDate() {
-
-                var date = new Date();
-                var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-
-                var dateString = days[date.getDay()] + ", " + months[date.getMonth()] + date.getDate();
-                document.getElementById("dateSection").innerHTML = dateString;
-            }
+            window.addEventListener('beforeunload', function() {
+                localStorage.setItem('listElems', JSON.stringify(currentListElems));
+            });
 
         </script>
+
     </body>
 </html>
