@@ -7,7 +7,7 @@ const isMacPlatform = (process.platform == 'darwin');
 const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 // set environment
-// process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'production';
 
 let mainWindow, addWindow;
 
@@ -69,6 +69,7 @@ ipcMain.on('scheduleItem:add', function(e, item, time) {
     mainWindow.webContents.send('scheduleItem:add', item, time);
     addWindow.close();
 });
+
 
 // catch scheduleItem:open
 ipcMain.on('scheduleItem:open', function() {

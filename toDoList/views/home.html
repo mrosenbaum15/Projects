@@ -52,19 +52,13 @@
                 ul.appendChild(li);
                 currentListElems.push(liText);
 
-                var listElems = document.querySelectorAll('li');
-
-                for(var i = 0; i < listElems.length; ++i) {
-                    console.log(listElems[i].getElementsByClassName('trash-icon')[0].onclick);
-                }
-
             });
 
             // remove all items
             ipcRenderer.on('scheduleItem:clear', function() {
                 ul.innerHTML = "";
                 ul.classList.remove('collection')
-            })
+            });
 
             window.addEventListener('beforeunload', function() {
                 localStorage.setItem('listElems', JSON.stringify(currentListElems));
