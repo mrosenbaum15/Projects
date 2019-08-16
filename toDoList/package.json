@@ -12,9 +12,7 @@
     "author": "Matthew Rosenbaum",
     "license": "ISC",
     "dependencies": {
-        "bulma": "^0.7.5",
-        "electron": "^6.0.2",
-        "materialize-css": "^1.0.0-rc.2"
+        "electron": "^6.0.2"
     },
     "devDependencies": {
         "electron-packager": "^14.0.4",
