@@ -7,7 +7,7 @@ const isMacPlatform = (process.platform == 'darwin');
 const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 // set environment
-process.env.NODE_ENV = 'production';
+// process.env.NODE_ENV = 'production';
 
 let mainWindow, addWindow;
 

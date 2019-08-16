@@ -57,7 +57,14 @@
             // remove all items
             ipcRenderer.on('scheduleItem:clear', function() {
                 ul.innerHTML = "";
-                ul.classList.remove('collection')
+                ul.classList.remove('collection');
+                console.log(currentListElems);
+                if(currentListElems) {
+                    console.log('got here');
+                    currentListElems = [];
+                }
+                console.log(currentListElems)
+
             });
 
             window.addEventListener('beforeunload', function() {
