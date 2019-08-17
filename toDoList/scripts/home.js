@@ -35,7 +35,7 @@ function updateDate() {
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
-    var dateString = days[date.getDay()] + ", " + months[date.getMonth()] + date.getDate();
+    var dateString = days[date.getDay()] + ", " + months[date.getMonth()] + " " + date.getDate();
     document.getElementById("dateSection").innerHTML = dateString;
 }
 
