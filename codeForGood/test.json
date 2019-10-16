@@ -1,0 +1,22 @@
+{
+  "Email": false,
+  "First Name": "first",
+  "Last Name": "last",
+  "Phone Number": 1234567890,
+  "Street Address": "street",
+  "City": "city",
+  "State": "state",
+  "Zip Code": "zip",
+  "Current Class": "Venture Basic",
+  "Ventures Basic": {
+      "Attendance Points": 10,
+      "Grades": {
+          "HW1": 1,
+          "HW2": 2,
+          "HW3": 3,
+          "Final": 0
+        },
+    }
+    "Calendar Events": "09/01/15","09/02/15",
+    "Placement Test": 10,
+}

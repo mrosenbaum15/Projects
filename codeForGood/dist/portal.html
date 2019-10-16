@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <title> Student Portal </title>
+
+        <!-- Bootstrap CSS CDN -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        <!-- Our Custom CSS -->
+        <link rel="stylesheet" href="/portal.834f3780.css">
+
+        <!-- Font Awesome JS -->
+        <script defer="" src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer="" src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
+    <script src="/portal.834f3780.js"></script><script src="/index.js"></script></head>
+    <body>
+
+        <!-- jQuery CDN - Slim version (=without AJAX) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>        <!-- Popper.JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+        <script defer="">function toggleSideNav() {
+  $('#sidebar').toggleClass('active');
+  var sidebar = document.getElementById('sidebarCollapse');
+
+  if (sidebar.style.left == "42px") {
+    sidebar.style.left = "210px";
+    sidebar.style.fontSize = "25px";
+  } else {
+    sidebar.style.left = "42px";
+    sidebar.style.fontSize = "15px";
+  }
+}
+
+function updateIframe(src) {
+  document.getElementById('portalIframe').src = src;
+  document.getElementById('portalIframe').src = src;
+  return false;
+}</script>
+
+        <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar" style="background-color: #41b6e6">
+        <div class="sidebar-header" style="background-color: #41b6e6">
+            <h3>
+                Portal Pages
+            </h3>
+            <strong>Nav</strong>
+                <i id="sidebarCollapse" style="font-size: 25px; position: absolute; top: 50px; left: 210px; cursor: pointer; color: black" onclick="toggleSideNav()" class="fas fa-bars"></i>
+
+        </div>
+
+        <ul class="list-unstyled components">
+
+            <li onclick="return updateIframe('index.html')">
+                <a href="">
+                    <i class="fas fa-graduation-cap"></i>
+                      &nbsp Academic Information
+                </a>
+            </li>
+                
+            
+            <li onclick="return updateIframe('policies.html')">
+                <a href="">
+                    <i class="fas fa-calendar"></i>
+                      &nbsp Policies
+                </a>
+            </li>
+            <li onclick="return updateIframe('/studentPortal/RecommendationsMap.html')">
+                <a href="">
+                    <i class="fas fa-map-signs"></i>
+                      &nbsp Resource Map
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+
+    <iframe id="portalIframe" style="left: 280px; width: 100%;" src="/index.html"></iframe>
+
+
+    <!-- Page Content  -->
+</div>
+    </body>
+</html>

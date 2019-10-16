@@ -1,0 +1,54 @@
+{
+  "name": "team-11",
+  "version": "1.0.0",
+  "description": "Team 11's project at Code for Good",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel studentPortal/portal.html",
+    "build": "parcel build studentPortal/portal.html",
+    "back:dev": "nodemon backend/index.js",
+    "back:start": "node backend/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chicago19/team-11.git"
+  },
+  "keywords": [
+    "Code",
+    "For",
+    "Good",
+    "Poder",
+    "Chicago"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chicago19/team-11/issues"
+  },
+  "homepage": "https://github.com/Chicago19/team-11#readme",
+  "dependencies": {
+    "@koa/cors": "^3.0.0",
+    "@koa/router": "^8.0.1",
+    "bulma": "^0.7.5",
+    "faker": "^4.1.0",
+    "firebase": "^6.6.2",
+    "jquery": "^3.4.1",
+    "koa": "^2.8.1",
+    "moment": "^2.24.0",
+    "normalize.css": "^8.0.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1",
+    "twilio": "^3.35.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "babel-preset-env": "^1.7.0",
+    "dotenv": "^8.1.0",
+    "nodemon": "^1.19.2",
+    "parcel-bundler": "^1.12.3"
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
+}

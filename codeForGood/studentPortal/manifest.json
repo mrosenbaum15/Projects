@@ -1,0 +1,15 @@
+{
+  "short_name": "Poder",
+  "name": "Poder Online Access",
+  "icons": [
+    {
+      "src": "/icons/favicon.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#1191BB",
+  "display": "standalone",
+  "theme_color": "#1191BB"
+}
