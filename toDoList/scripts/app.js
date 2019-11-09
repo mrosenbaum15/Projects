@@ -9,7 +9,8 @@ const {app, BrowserWindow, Menu, ipcMain} = electron;
 // set environment
 // process.env.NODE_ENV = 'production';
 
-let mainWindow, addWindow;
+let mainWindow;
+let addWindow = null;
 
 app.on('ready', function() {
 
@@ -101,6 +102,43 @@ const mainMenuTemplate = [
             {
                 label: 'Quit',
                 accelerator: isMacPlatform ? 'Command+Q': 'Ctrl+Q',
+                click() {
+                    app.quit();
+                }
+            }
+
+        ]
+    },
+
+    {
+        label: 'Window',
+        submenu: [
+
+            {
+                label: 'Minimize',
+                accelerator: isMacPlatform ? 'Command+M' : 'Ctrl+M',
+                click() {
+                    mainWindow.minimize();
+                    if(addWindow != null) {
+                        addWindow.minimize();
+                    }
+                }
+            },
+
+            {
+                label: 'Open',
+                accelerator: isMacPlatform ? 'Command+O' : 'Ctrl+O',
+                click() {
+                    mainWindow.show();
+                    if(addWindow != null) {
+                        addWindow.show();
+                    }
+                }
+            },
+
+            {
+                label: 'Close',
+                accelerator: isMacPlatform ? 'Command+W': 'Ctrl+W',
                 click() {
                     app.quit();
                 }
