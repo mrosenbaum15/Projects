@@ -43,7 +43,7 @@ module Processor (input logic   Clk,     // Internal
                         .Ld_A, //note these are inferred assignments, because of the existence a logic variable of the same name
                         .Ld_B,
                         .Shift_En,
-		 	.D(Din_S), // MS 4 bits of Din
+			.D(Din_S), // MS 8 bits of Din
                         .A_In(newA),
                         .B_In(newB),
                         .A_out(opA),

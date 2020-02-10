@@ -1,7 +1,8 @@
+// changed to be 8-bit register
 module reg_8 (input  logic Clk, Reset, Shift_In, Load, Shift_En,
-              input  logic [7:0]  D,
+	      input  logic [7:0]  D, // 8-bit extension
               output logic Shift_Out,
-              output logic [7:0]  Data_Out);
+	      output logic [7:0]  Data_Out); // 8-bit extension
 
     always_ff @ (posedge Clk)
     begin
@@ -13,6 +14,8 @@ module reg_8 (input  logic Clk, Reset, Shift_In, Load, Shift_En,
 		 begin
 			  //concatenate shifted in data to the previous left-most 3 bits
 			  //note this works because we are in always_ff procedure block
+			  
+			  // changing to reflect extension to 8 bits
 			  Data_Out <= { Shift_In, Data_Out[7:1] }; 
 	    end
     end

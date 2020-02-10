@@ -24,7 +24,7 @@ module control (input  logic Clk, Reset, LoadA, LoadB, Execute,
         
 		  next_state  = curr_state;	//required because I haven't enumerated all possibilities below
         unique case (curr_state) 
-
+		// changing next_state code to reflect added states (seen above)
             A :    if (Execute)
                        next_state = B;
             B :    next_state = C;
