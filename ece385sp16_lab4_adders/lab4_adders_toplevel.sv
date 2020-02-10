@@ -113,7 +113,7 @@ module lab4_adders_toplevel
         .CO(CO_comb)
     );
 	 
-//    carry_lookahead_adder carry_lookahead_adder_inst
+//    carry_lookahead_adder carry_lookahead_adder
 //    (
 //        .A,             // This is shorthand for .A(A) when both wires/registers have the same name
 //        .B,
@@ -121,7 +121,7 @@ module lab4_adders_toplevel
 //        .CO(CO_comb)
 //    );
 
-//    carry_select_adder carry_select_adder_inst
+//    carry_select_adder carry_select_adder
 //    (
 //        .A,             // This is shorthand for .A(A) when both wires/registers have the same name
 //        .B,
