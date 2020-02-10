@@ -25,7 +25,7 @@ module Processor (input logic   Clk,     // Internal
 	 logic Reset_SH, LoadA_SH, LoadB_SH, Execute_SH;
 	 logic [2:0] F_S;
 	 logic [1:0] R_S;
-	 logic Ld_A, Ld_B, newA, newB, op1A, op1B, op2A, op2B, bitA, bitB, Shift_En,
+	 logic Ld_A, Ld_B, newA, newB, opA, opB, bitA, bitB, Shift_En,
 	       F_A_B;
 	logic [7:0] A, B, Din_S; // now 8-bit
 	 
@@ -37,37 +37,24 @@ module Processor (input logic   Clk,     // Internal
 	 
 	 //Instantiation of modules here
 	 // first register unit
-	 register_unit    reg_unit (
+	 register_unit    first_reg_unit (
                         .Clk(Clk),
                         .Reset(Reset_SH),
                         .Ld_A, //note these are inferred assignments, because of the existence a logic variable of the same name
                         .Ld_B,
                         .Shift_En,
-		 	.D(Din_S[7:4]), // MS 4 bits of Din
+		 	.D(Din_S), // MS 4 bits of Din
                         .A_In(newA),
                         .B_In(newB),
                         .A_out(opA),
                         .B_out(opB),
-		 	.A(A[7:4]), // MS 4 bits of A
-		 	.B(B[7:4]) ); // MS 4 bits of B
-	 // second register unit
-	 register_unit    reg_unit (
-                        .Clk(Clk),
-                        .Reset(Reset_SH),
-                        .Ld_A, //note these are inferred assignments, because of the existence a logic variable of the same name
-                        .Ld_B,
-                        .Shift_En,
-		 	.D(Din_S[3:0]), // LS 4 bits of Din
-                        .A_In(newA),
-                        .B_In(newB),
-                        .A_out(opA),
-                        .B_out(opB),
-			.A(A[3:0]),  
-		        .B(B[3:0]) ); // LS 4 bits of A, B
+		 	.A(A), // MS 8 bits of A
+		 	.B(B) ); // MS 8 bits of B
+	
     compute          compute_unit (
 								.F(F_S),
-	   		.A_In(op2A),
-	    		.B_In(op2B),
+	   		.A_In(opA),
+	    		.B_In(opB),
                         .A_Out(bitA),
                         .B_Out(bitB),
                         .F_A_B );
@@ -107,8 +94,7 @@ module Processor (input logic   Clk,     // Internal
 	  //Note: S stands for SYNCHRONIZED, H stands for active HIGH
 	  //Note: We can invert the levels inside the port assignments
 	  sync button_sync[3:0] (Clk, {~Reset, ~LoadA, ~LoadB, ~Execute}, {Reset_SH, LoadA_SH, LoadB_SH, Execute_SH});
-	  sync Din_sync_first[3:0] (Clk, Din[7:4], Din_S[7:4]);
-	  sync Din_sync_second[3:0] (Clk, Din[3:0], Din_S[3:0]);
+	  sync Din_sync_[7:0] (Clk, Din[7:0], Din_S[7:0]);
 	  sync F_sync[2:0] (Clk, F, F_S);
 	  sync R_sync[1:0] (Clk, R, R_S);
 	  
