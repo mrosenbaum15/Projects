@@ -9,12 +9,15 @@ module d_flip_flop
 
 always_ff @ (posedge Clk or posedge Reset) begin
 
-        Q <= Q
 
-        if(Load)
-            Q <= D;
-        else if(Reset)
+        if(Reset)
             Q <= 1'b0;
+        else begin
+				if(Load)	
+					Q <= 1'b0;
+				else
+					Q <= Q;
+		  end
 end
 
 endmodule

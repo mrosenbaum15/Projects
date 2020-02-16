@@ -2,8 +2,8 @@ module nine_bit_adder
 (
         input [7:0] A,
         input [7:0] B,
-        input function,
-        output [7:0] S
+        input func_val,
+        output [8:0] S
 );
 
 logic [1:0] last_bits;
@@ -12,13 +12,13 @@ logic [7:0] new_B;
 
 always_comb begin
 
-        new_B = ( B ^ { 8{function} } );
+        new_B = ( B ^ { 8{func_val} } );
         last_bits[0] = A[7];
         last_bits[1] = new_B[7];
 
 end
 
-full_adder full_0(.x(A[0]), .y(new_B[0]), .cin(function), .sum(S[0]), .cout(carry[0]));
+full_adder full_0(.x(A[0]), .y(new_B[0]), .cin(func_val), .sum(S[0]), .cout(carry[0]));
 full_adder full_1(.x(A[1]), .y(new_B[1]), .cin(carry[0]), .sum(S[1]), .cout(carry[1]));
 full_adder full_2(.x(A[2]), .y(new_B[2]), .cin(carry[1]), .sum(S[2]), .cout(carry[2]));
 full_adder full_3(.x(A[3]), .y(new_B[3]), .cin(carry[2]), .sum(S[3]), .cout(carry[3]));
