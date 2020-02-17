@@ -1,3 +1,6 @@
+// module for control unit - handles different cases for switching between states
+// inputs: Clk (Clock), Reset, ClearA_LoadB, Execute (aka Run), M (LSB of B)
+// outputs: Shift_En (enable), ClearA (another reset), CA_LB (ClearA_LoadB), Addition (high or low), func_val
 module control
 (
 			input logic Clk,
@@ -9,17 +12,23 @@ module control
 			output logic ClearA,
 			output logic CA_LB,
 			output logic Addition,
-			output logic Subtraction
+			output logic func_val
 );
 
+	logic HIGH, LOW;
+	assign HIGH = 1'b1;
+	assign LOW = 1'b0;
+
     // Declare signals curr_state, next_state of type enum
-	enum logic [4:0] {Start, End, Load, Restart, Nothing, A, AA, B, BB, C, CC, D, DD, E, EE, F, FF, G, GG, H, HH}   curr_state, next_state; 
+	 // starting with A - add operations
+	 // starting with S - shift operations
+	enum logic [4:0] {Start, End, Load, Restart, Nothing, A1, S1, A2, S2, A3, S3, A4, S4, A5, S5, A6, S6, A7, S7, A8, S8}   curr_state, next_state; 
 
 	//updates flip flop, current state is the only one
 	always_ff @ (posedge Clk or posedge Reset)  
     begin
         if (Reset)
-            curr_state <= Start;
+            curr_state <= Restart;
         else 
             curr_state <= next_state;
     end
@@ -30,117 +39,109 @@ module control
         
 		  next_state  = curr_state;	//required because I haven't enumerated all possibilities below
         unique case (curr_state) 
-		  
-				Start:	if(Execute)
-								next_state = A;
-							else if(CA_LB)
-								next_state = Load;
-				Load:		next_state = Start;
 				
-				A:			next_state = AA;
-				AA:		next_state = B;
-				B:			next_state = BB;
-				BB:		next_state = C;
-				C:			next_state = CC;
-				CC:		next_state = D;
-				D:			next_state = DD;
-				DD:		next_state = E;
-				E:			next_state = EE;
-				EE:		next_state = F;
-				F:			next_state = FF;
-				FF:		next_state = G;
-				G:			next_state = GG;
-				GG:		next_state = H;
-				H: 		next_state = HH;
-				HH:		next_state = End;
+				// start in first add operation, which is A1
+				Start:	next_state = A1;
 				
+				A1:			next_state = S1;
+				S1:			next_state = A2;
+				A2:			next_state = S2;
+				S2:			next_state = A3;
+				A3:			next_state = S3;
+				S3:			next_state = A4;
+				A4:			next_state = S4;
+				S4:			next_state = A5;
+				A5:			next_state = S5;
+				S5:			next_state = A6;
+				A6:			next_state = S6;
+				S6:			next_state = A7;
+				A7:			next_state = S7;
+				S7:			next_state = A8;
+				A8: 			next_state = S8;
+				S8:			next_state = End;
+				
+				// idle state if not trying to execute and entire operation is finished
 				End:		if(~Execute)
 								next_state = Nothing;
+
+				// after restarting or loading, we wait
+				Restart, Load: next_state = Nothing;
 				
-				Nothing:	if(Execute)
-									next_state = Restart;
-									
-				Restart: next_state = A;
-				
+				// can either load while waiting, or run
+				Nothing:	if(ClearA_LoadB)
+								next_state = Load;
+							else if(Execute)
+								next_state = Start;
+								
         endcase
    
 		
 		  // Assign outputs based on ‘state’
         case (curr_state) 
-	   	   Start, Nothing, End: 
+				
+				// 1'b0 is low
+				// 1'b1 is high
+	   	   Start, Nothing, End, Restart: 
 	         begin
-                Shift_En <= 1'b0;
-					 ClearA <= 1'b0;
-					 CA_LB <= 1'b0;
-					 Addition <= 1'b0;
-					 Subtraction <= 1'b0;	 
+                Shift_En <= LOW;
+					 ClearA <= LOW;
+					 
+					 // only difference between Restart and the others you need to clear after restarting
+					 if(curr_state == Restart)
+							ClearA <= HIGH;							
+					 
+					 CA_LB <= LOW;
+					 Addition <= LOW;
+					 func_val <= LOW;	 
 		      end
 				
 	   	   Load: 
 		      begin
-					 Shift_En <= 1'b0;
-					 ClearA <= 1'b0;
-					 CA_LB <= 1'b1;
-					 Addition <= 1'b0;
-					 Subtraction <= 1'b0;	      
+					 Shift_En <= LOW;
+					 ClearA <= LOW;
+					 CA_LB <= HIGH;
+					 Addition <= LOW;
+					 func_val <= LOW;	      
 		      end
 	   	   
-		      A,
-				B,
-				C,
-				D,
-				E,
-				F,
-				G: 
+		      A1,A2,A3,A4,A5,A6,A7,A8: 
 				begin
-					 Shift_En <= 1'b0;
-					 ClearA <= 1'b0;
-					 CA_LB <= 1'b0;
+					 Shift_En <= LOW;
+					 ClearA <= LOW;
+					 CA_LB <= LOW;
 					 
-					 if(M) begin
-							Addition <= 1'b1;
-							if(curr_state == H) 
-								Subtraction <= 1'b1;
-							else
-								Subtraction <= 1'b0;
-					 end
+					 // M high indicates addition
+					 if(M) 
+							Addition <= HIGH;
+					 else 
+							Addition <= LOW;
 							
-					 else begin
-							Addition <= 1'b0;
-							Subtraction <= 1'b0;
-					 end
+					 // last add state is really subtraction
+					 if(curr_state == A8) 
+								func_val <= HIGH;
+					 else
+								func_val <= LOW;
 				end
-			
-			AA,
-			BB,
-			CC,
-			DD,
-			EE,
-			FF,
-			GG,
-			HH: begin
-					 Shift_En <= 1'b1;
-					 ClearA <= 1'b0;
-					 CA_LB <= 1'b0;
-					 Addition <= 1'b0;
-					 Subtraction <= 1'b0;
+				
+				// shift-enable high for shift operations
+				S1,S2,S3,S4,S5,S6,S7,S8:
+				begin
+					 Shift_En <= HIGH;
+					 ClearA <= LOW;
+					 CA_LB <= LOW;
+					 Addition <= LOW;
+					 func_val <= LOW;
 				 end
 				 
-			Restart: begin
-					 Shift_En <= 1'b0;
-					 ClearA <= 1'b1;
-					 CA_LB <= 1'b0;
-					 Addition <= 1'b0;
-					 Subtraction <= 1'b0;
-				 end
-				
-			default: begin
+				// default case - all zeros
+			default:
+			begin
 					 Shift_En <= 1'b0;
 					 ClearA <= 1'b0;
 					 CA_LB <= 1'b0;
 					 Addition <= 1'b0;
-					 Subtraction <= 1'b0;
-				 end
+					 func_val <= 1'b0;
+			end
 				 
 			endcase
 			
