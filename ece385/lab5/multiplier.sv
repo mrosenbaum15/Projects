@@ -16,9 +16,7 @@ module multiplier
 		  output logic [7:0] Bval,
 		  output logic X
 );
-										 
-
-										  
+										 								  
 	logic [7:0] A_in; // A_in, B_in are A and B in diagram given in lab 5 manual
 	logic [7:0] B_in;
 	logic [7:0] A_new; // A_new is what feeds out of nine bit adder in lab 5 manual
@@ -32,29 +30,25 @@ module multiplier
 	// creating nine_bit_adder
 	nine_bit_adder nba_0(.*, .A_in, .B_in(Switches), .func_val, .S(Sum) );
 	
-	// the following lines invert the reset, clrA_ldB, and run variables
+		// the following lines invert the reset, clrA_ldB, and run variables
 	// to correspond with high/low logic in control unit code
-	logic reset_negate, ca_lb_negate, run_negate; 
-	
-	assign reset_negate = ~Reset;
-	assign ca_lb_negate = ~ClearA_LoadB;
-   assign run_negate = ~Run;
+	logic Reset_SH, ClearA_LoadB_SH, Run_SH; 
 	
 	// creating control unit
-	control	ctrl_0(.*, .Reset(reset_negate), .ClearA_LoadB(ca_lb_negate), .Execute(run_negate), .M (B_data),
+	control	ctrl_0(.*, .Reset(Reset_SH), .ClearA_LoadB(ClearA_LoadB_SH), .Execute(Run_SH), .M (B_data),
 						.Shift_En, .ClearA, .CA_LB, .Addition, .func_val);
 	
 	// creating d-flip-flop					
-	d_flip_flop dff_0(.*, .Load(Addition), .Reset(ClearA | CA_LB), .D(Sum[8]), .Q(X) );
+	d_flip_flop dff_0(.Clk(Clk), .Load(Addition), .Reset(ClearA | Reset_SH), .D(Sum[8]), .Q(X) );
 	
 	// holds 8 bits of sum, just a holder to be put in reg_0 below
 	logic [7:0] first_seven_sum;
 	assign first_seven_sum = Sum[7:0];
 	
 	// creating register unit - consists of registers A and B
-	reg_8 reg_0( .*, .Reset(ClearA | CA_LB), .Shift_In(X), .Load(Addition),
+	reg_8 reg_0( .*, .Reset(ClearA | Reset_SH), .Shift_In(X), .Load(Addition),
 						.D(first_seven_sum), .Shift_Out(A_data), .Data_Out(A_in) );
-	reg_8 reg_1( .*, .Reset(ClearA), .Shift_In(A_data), .Load(CA_LB),
+	reg_8 reg_1( .*, .Reset(Reset_SH), .Shift_In(A_data), .Load(CA_LB),
 						.D(Switches), .Shift_Out(B_data), .Data_Out(B_in) );
 	
 	// for hex display on FPGA board - taken from lab 4 code
@@ -70,5 +64,9 @@ module multiplier
 	HexDriver HexBU (
                   .In0(B_in[7:4]),
                   .Out0(BhexU));
-						
+	
+	// taken from given lab4 processor code
+	sync button_sync[2:0] (Clk, {~Reset, ~ClearA_LoadB, ~Run}, {Reset_SH, ClearA_LoadB_SH, Run_SH});
+	sync Din_sync_[7:0] (Clk, Switches, A_new);
+				
 endmodule

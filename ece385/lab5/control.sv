@@ -22,13 +22,13 @@ module control
     // Declare signals curr_state, next_state of type enum
 	 // starting with A - add operations
 	 // starting with S - shift operations
-	enum logic [4:0] {Start, End, Load, Restart, Nothing, A1, S1, A2, S2, A3, S3, A4, S4, A5, S5, A6, S6, A7, S7, A8, S8}   curr_state, next_state; 
+	enum logic [4:0] {Start, End, Ready, A1, S1, A2, S2, A3, S3, A4, S4, A5, S5, A6, S6, A7, S7, A8, S8}   curr_state, next_state; 
 
 	//updates flip flop, current state is the only one
 	always_ff @ (posedge Clk or posedge Reset)  
     begin
         if (Reset)
-            curr_state <= Restart;
+            curr_state <= Ready;
         else 
             curr_state <= next_state;
     end
@@ -41,8 +41,10 @@ module control
         unique case (curr_state) 
 				
 				// start in first add operation, which is A1
-				Start:	next_state = A1;
-				
+				Ready:	if(Execute)
+								next_state = Start;
+								
+				Start:		next_state = A1;
 				A1:			next_state = S1;
 				S1:			next_state = A2;
 				A2:			next_state = S2;
@@ -62,16 +64,7 @@ module control
 				
 				// idle state if not trying to execute and entire operation is finished
 				End:		if(~Execute)
-								next_state = Nothing;
-
-				// after restarting or loading, we wait
-				Restart, Load: next_state = Nothing;
-				
-				// can either load while waiting, or run
-				Nothing:	if(ClearA_LoadB)
-								next_state = Load;
-							else if(Execute)
-								next_state = Start;
+								next_state = Ready;
 								
         endcase
    
@@ -81,34 +74,34 @@ module control
 				
 				// 1'b0 is low
 				// 1'b1 is high
-	   	   Start, Nothing, End, Restart: 
+				
+				// 'beginning state' - more like waiting until execute pressed
+	   	   Ready: 
 	         begin
                 Shift_En <= LOW;
-					 ClearA <= LOW;
-					 
-					 // only difference between Restart and the others you need to clear after restarting
-					 if(curr_state == Restart)
-							ClearA <= HIGH;							
-					 
-					 CA_LB <= LOW;
+					 ClearA <= ClearA_LoadB;
+					 CA_LB <= ClearA_LoadB;
 					 Addition <= LOW;
-					 func_val <= LOW;	 
+					 func_val <= LOW;
 		      end
 				
-	   	   Load: 
+				// once execute is pressed
+	   	   Start: 
 		      begin
 					 Shift_En <= LOW;
-					 ClearA <= LOW;
-					 CA_LB <= HIGH;
+					 ClearA <= HIGH;
+					 CA_LB <= LOW;
 					 Addition <= LOW;
 					 func_val <= LOW;	      
 		      end
 	   	   
+				// deals with addition/subtraction operations
 		      A1,A2,A3,A4,A5,A6,A7,A8: 
 				begin
 					 Shift_En <= LOW;
 					 ClearA <= LOW;
 					 CA_LB <= LOW;
+					 func_val <= LOW;
 					 
 					 // M high indicates addition
 					 if(M) 
@@ -116,11 +109,8 @@ module control
 					 else 
 							Addition <= LOW;
 							
-					 // last add state is really subtraction
-					 if(curr_state == A8) 
-								func_val <= HIGH;
-					 else
-								func_val <= LOW;
+					 if(curr_state == A8)
+							func_val <= HIGH;
 				end
 				
 				// shift-enable high for shift operations
@@ -132,15 +122,25 @@ module control
 					 Addition <= LOW;
 					 func_val <= LOW;
 				 end
+				
+				// after final shift operation occurs
+				End:
+				begin
+					 Shift_En <= LOW;
+					 ClearA <= LOW;
+					 CA_LB <= LOW;
+					 Addition <= LOW;
+					 func_val <= LOW;
+			end
 				 
 				// default case - all zeros
 			default:
 			begin
-					 Shift_En <= 1'b0;
-					 ClearA <= 1'b0;
-					 CA_LB <= 1'b0;
-					 Addition <= 1'b0;
-					 func_val <= 1'b0;
+					 Shift_En <= LOW;
+					 ClearA <= LOW;
+					 CA_LB <= LOW;
+					 Addition <= LOW;
+					 func_val <= LOW;
 			end
 				 
 			endcase
