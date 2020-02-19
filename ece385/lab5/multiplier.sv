@@ -24,6 +24,9 @@ module multiplier
 	logic A_data; // individual bit of outputs for A and B, respectively
 	logic B_data;
 	
+	assign Aval = A_in;
+	assign Bval = B_in;
+	
 	// control variables that will store outputs from control unit code
 	logic Shift_En, ClearA, CA_LB, Addition, func_val;
 	
