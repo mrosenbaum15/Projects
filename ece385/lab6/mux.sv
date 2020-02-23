@@ -3,10 +3,10 @@
 // output: mux_output (output result)
 module two_one_MUX
 (
-			input logic in0,
-			input logic in1,
+			input logic [15:0] in0,
+			input logic [15:0] in1,
 			input logic select,
-			output logic mux_output
+			output logic [15:0] mux_output
 );
 
 
@@ -29,12 +29,12 @@ endmodule
 // output: mux_output (2-bit output result)
 module four_one_MUX
 (
-			input [1:0] in0,
-			input [1:0] in1,
-            input [1:0] in2,
-            input [1:0] in3,
-			input [1:0] select,
-			output [1:0] mux_output
+			input logic [15:0] in0,
+			input logic [15:0] in1,
+            input logic [15:0] in2,
+            input logic [15:0] in3,
+			input logic [1:0] select,
+			output logic [15:0] mux_output
 );
 
 
