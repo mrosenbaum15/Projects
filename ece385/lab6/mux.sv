@@ -49,7 +49,7 @@ always_comb
 			mux_output = in1;
         else if(select == 2'b10)
     		mux_output = in2;
-        else if(select == 2'b11)
+        else
         	mux_output = in3;
 
 	end
@@ -81,7 +81,7 @@ always_comb
 			mux_output = in1;
         else if(select == 2'b10)
     		mux_output = in2;
-        else if(select == 2'b11)
+        else
         	mux_output = in3;
 
 	end
@@ -113,7 +113,7 @@ always_comb
 			mux_output = in1;
         else if(select == 4'h4)
     		mux_output = in2;
-        else if(select == 4'h8)
+        else
         	mux_output = in3;
 
 	end

@@ -17,7 +17,7 @@ always_ff @ (posedge Clk) begin
         if(load_branch_en)
             branch_en_output <= ~( (instructions & output_nzp) == 3'b000);
         else if(Reset)
-            branch_enable <= 0;
+            branch_en_output <= 0;
 
         if(load_cc) begin
             output_nzp[0] <= nzp[0];
@@ -44,9 +44,9 @@ always_comb begin
             nzp[2] = 0;
         end
         else begin
-            nzp[0] = Z;
-            nzp[1] = Z;
-            nzp[2] = Z;
+            nzp[0] = 1'hZ;
+            nzp[1] = 1'hZ;
+            nzp[2] = 1'hZ;
         end
 
 end

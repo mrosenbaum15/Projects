@@ -14,7 +14,7 @@ always_comb begin
             output_data = A & B;
         else if(ALU_select == 2'b10)
             output_data = ~A;
-        else if(ALU_select == 2'b11)
+        else
             output_data = A;
 
 end

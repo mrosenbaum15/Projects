@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // Company:        UIUC ECE Dept.
 // Engineer:       Stephen Kempf
@@ -74,7 +75,16 @@ assign MIO_EN = ~OE;
 
 // You need to make your own datapath module and connect everything to the datapath
 // Be careful about whether Reset is active high or low
-datapath d0 (/* Please fill in the signals.... */);
+
+
+datapath d0 ( .Clk(Clk), .Reset(Reset_ah),
+				.LD_MAR(LD_MAR), .LD_MDR(LD_MDR), .LD_IR(LD_IR), .LD_BEN(LD_BEN),
+				.LD_CC(LD_CC), .LD_REG(LD_REG), .LD_PC(LD_PC), .LD_LED(LD_LED),
+				.GatePC(GatePC), .GateMDR(GateMDR), .GateALU(GateALU), .GateMARMUX(GateMARMUX),
+				.PCMUX(PCMUX), .ADDR2MUX(ADDR2MUX), .ALUK(ALUK),
+				.DRMUX(DRMUX), .SR1MUX(SR1MUX), .SR2MUX(SR2MUX), .ADDR1MUX(ADDR1MUX),
+				.MIO_EN(MIO_EN), .input_MDR(MDR_In),
+				.output_MAR(MAR), .output_MDR(MDR), .output_IR(IR), .output_PC(PC), .BEN(BEN) );
 
 // Our SRAM and I/O controller
 Mem2IO memory_subsystem(
