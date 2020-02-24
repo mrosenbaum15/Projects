@@ -1,4 +1,4 @@
-module branch_enable
+module BEN
 (
         input logic Clk,
         input logic Reset,

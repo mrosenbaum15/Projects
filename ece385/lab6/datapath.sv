@@ -67,7 +67,7 @@ reg_16 PC( .Clk(Clk), .Reset(Reset), .Load(LD_PC), .D(output_PCMUX_local), .Data
 ALU alu0( .A(output_SR1_local), .B(output_SR2MUX_local), .ALU_select(ALUK),
 .output_data(output_ALU_local) );
 
-branch_enable br_en0( .Clk(Clk), .Reset(Reset), .load_cc(LD_CC), .load_branch_en(LD_BEN),
+BEN br_en0( .Clk(Clk), .Reset(Reset), .load_cc(LD_CC), .load_branch_en(LD_BEN),
 .input_data(data_bus_local), .instructions(output_IR_local[11:9]), .branch_en_output(output_branch_en_local) );
 
 assign output_MAR = output_MAR_local;
