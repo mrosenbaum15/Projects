@@ -1,3 +1,6 @@
+// module BEN (branch_enable)
+// inputs: Clk, Reset, load_cc (condition codes), load_branch_en, instructions (IR)
+// output: branch_en_output (acting at as a FlipFlop)
 module BEN
 (
         input logic Clk,
@@ -9,9 +12,12 @@ module BEN
         output logic branch_en_output
 );
 
+
+// nzp arrays: 0-n, 1-z, 2-p for both arrays respectively
 logic [2:0] nzp;
 logic [2:0] output_nzp;
 
+// flip-flop part - handling next state of nzp values
 always_ff @ (posedge Clk) begin
 
         if(load_branch_en)
@@ -24,8 +30,14 @@ always_ff @ (posedge Clk) begin
             output_nzp[1] <= nzp[1];
             output_nzp[2] <= nzp[2];
         end
+
 end
 
+
+// in the following logic, you set z as high if 16 bits of input are zero
+// set n high if MSB is a 1
+// set p high if MSB is a 0 and all bits are not zero
+// otherwise, set to Z
 always_comb begin
 
         if(input_data == 16'b0) begin

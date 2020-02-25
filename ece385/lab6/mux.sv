@@ -101,6 +101,7 @@ always_comb
 	begin
 
 		// determing which data bit should be selected
+		// select will be either: 0001, 0010, 0100, 1000
 		if(select == 4'h1)
 			mux_output = in0;
 		else if(select == 4'h2)

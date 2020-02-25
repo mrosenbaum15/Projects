@@ -1,3 +1,6 @@
+// module ALU
+// inputs: A, B, ALU_select
+// output: output_data
 module ALU
 (
         input logic [15:0] A,
@@ -6,6 +9,7 @@ module ALU
         output logic [15:0] output_data
 );
 
+// using LC3 architecture for ALU - either ADD A, B, AND them, NOT A, or PASS A
 always_comb begin
 
         if(ALU_select == 2'b00)

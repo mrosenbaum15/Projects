@@ -1,3 +1,6 @@
+// module register_file
+// inputs: Clk, Reset, Load, data_bus, DR, SR1, SR2
+// output: output_SR1, output_SR2
 module register_file
 (
         input logic Clk,
@@ -11,8 +14,11 @@ module register_file
         output logic [15:0] output_SR2
 );
 
+// creating 8x16 register system
 logic [7:0][15:0] reg_system;
 
+// on rising edge, set all registers to what is on the bus if DR is high
+// otherwise, clear everything
 always_ff @ (posedge Clk) begin
 
         if(Load) begin
@@ -38,6 +44,7 @@ always_ff @ (posedge Clk) begin
 
 end
 
+// selecting which register system and outputting it into either SR1 or SR2, depending on which is input as high
 always_comb begin
 
         case(SR1)
