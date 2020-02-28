@@ -1,4 +1,7 @@
-// changed to be 16-bit register
+// Inputs: Clk, Reset, Load, [15:0] D
+// Outputs: [15:0] Data_Out
+// Description:
+// Purpose:
 module reg_16 (input  logic Clk, Reset, Load,
 	      input  logic [15:0]  D, // 16-bit extension
 	      output logic [15:0]  Data_Out); // 16-bit extension

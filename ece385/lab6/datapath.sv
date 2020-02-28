@@ -1,3 +1,9 @@
+// Inputs: Clk, Reset, LD_MAR, LD_MDR, LD_IR, LD_BEN, LD_CC, LD_CC, LD_REG, LD_PC, LD_LED,
+//         GatePC, GateMDR, GateALU, GateMARMUX, ([1:0] PCMUX, ADDR2MUX, ALUK),
+//         DRUX, SR1MUX, SR2MUX, ADDR1MUX, MIO_EN, [15:0] input_MDR
+// Outputs: [11:0] output_LED, ([15:0] output_MAR, output_MDR, output_IR, output_PC), output_BEN
+// Description:
+// Purpose:
 module datapath
 (
         input logic Clk,

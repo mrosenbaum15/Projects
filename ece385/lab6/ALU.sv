@@ -1,6 +1,7 @@
-// module ALU
-// inputs: A, B, ALU_select
-// output: output_data
+// Inputs: ([15:0 A, B), [1:0] ALU_select
+// Outputs: [15:0] output_data
+// Description:
+// Purpose:
 module ALU
 (
         input logic [15:0] A,

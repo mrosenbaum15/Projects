@@ -75,7 +75,7 @@ assign MIO_EN = ~OE;
 
 // You need to make your own datapath module and connect everything to the datapath
 // Be careful about whether Reset is active high or low
-
+// Added LED output for week 2
 
 datapath d0 ( .Clk(Clk), .Reset(Reset_ah),
 				.LD_MAR(LD_MAR), .LD_MDR(LD_MDR), .LD_IR(LD_IR), .LD_BEN(LD_BEN),
@@ -85,6 +85,7 @@ datapath d0 ( .Clk(Clk), .Reset(Reset_ah),
 				.DRMUX(DRMUX), .SR1MUX(SR1MUX), .SR2MUX(SR2MUX), .ADDR1MUX(ADDR1MUX),
 				.MIO_EN(MIO_EN), .input_MDR(MDR_In),
                 .output_LED(LED), .output_MAR(MAR), .output_MDR(MDR), .output_IR(IR), .output_PC(PC), .output_BEN(BEN) );
+
 
 // Our SRAM and I/O controller
 Mem2IO memory_subsystem(

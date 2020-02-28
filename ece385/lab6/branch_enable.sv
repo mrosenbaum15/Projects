@@ -1,6 +1,7 @@
-// module BEN (branch_enable)
-// inputs: Clk, Reset, load_cc (condition codes), load_branch_en, instructions (IR)
-// output: branch_en_output (acting at as a FlipFlop)
+// Inputs: Clk, Reset, load_cc (condition codes), load_branch_en, [15:0] input_data, [2:0] instructions (IR)
+// Outputs: branch_en_output (acting at as a FlipFlop)
+// Description:
+// Purpose:
 module BEN
 (
         input logic Clk,

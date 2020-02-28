@@ -1,6 +1,7 @@
-// module register_file
-// inputs: Clk, Reset, Load, data_bus, DR, SR1, SR2
-// output: output_SR1, output_SR2
+// Inputs: Clk, Reset, Load, [15:0] data_bus, ([2:0] DR, SR1, SR2)
+// Outputs: ([15:0] output_SR1, output_SR2)
+// Description:
+// Purpose:
 module register_file
 (
         input logic Clk,
