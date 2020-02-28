@@ -8,8 +8,9 @@ module datapath
         input logic DRMUX, SR1MUX, SR2MUX, ADDR1MUX,
         input logic MIO_EN,
         input logic [15:0] input_MDR,
+        output logic [11:0] output_LED,
         output logic [15:0] output_MAR, output_MDR, output_IR, output_PC,
-        output logic BEN
+        output logic output_BEN
 );
 
 logic [15:0] data_bus_local, output_SR1_local, output_SR2_local;
@@ -42,9 +43,9 @@ assign gate_set = {GateMDR, GateALU, GatePC, GateMARMUX};
 four_one_MUX addr2_mux2( .in0(16'b0), .in1(sext_10),
                         .in2(sext_7), .in3(sext_5), .select(ADDR2MUX), .mux_output(output_ADDR2MUX_local) );
 
-four_one_MUX sr1_mux3( .in0(output_IR_local[11:9]), .in1(output_IR_local[8:6]),
-                        .in2(3'd6), .in3(), .select(SR1MUX), .mux_output(input_reg_system_local) );
-								
+two_one_MUX_3bit sr1_mux3( .in0(output_IR_local[11:9]), .in1(output_IR_local[8:6]),
+                           .select(SR1MUX), .mux_output(input_reg_system_local) );
+
 two_one_MUX sr2_mux_4( .in0(output_SR2_local), .in1(sext_11), .select(output_IR_local[5]), .mux_output(output_SR2MUX_local) );
 
 four_one_MUX pc_mux_5( .in0(output_PC_local + 1'b1), .in1(data_bus_local),
@@ -70,9 +71,19 @@ ALU alu0( .A(output_SR1_local), .B(output_SR2MUX_local), .ALU_select(ALUK),
 BEN br_en0( .Clk(Clk), .Reset(Reset), .load_cc(LD_CC), .load_branch_en(LD_BEN),
 .input_data(data_bus_local), .instructions(output_IR_local[11:9]), .branch_en_output(output_branch_en_local) );
 
+always_ff @ (posedge Clk) begin
+
+        if(LD_LED)
+            output_LED <= IR[11:0];
+        else
+            LED = 12'd0;
+
+end
+
 assign output_MAR = output_MAR_local;
 assign output_MDR = output_MDR_local;
 assign output_IR = output_IR_local;
 assign output_PC = output_PC_local;
+assign output_BEN = output_branch_en_local;
 
 endmodule
