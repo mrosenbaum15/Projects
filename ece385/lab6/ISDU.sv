@@ -239,7 +239,10 @@ module ISDU (   input logic         Clk,
 					GateMDR = 1'b1;
 					LD_IR = 1'b1;
 				end
-			PauseIR1: ;
+			PauseIR1:
+				begin
+					LD_LED = HIGH;
+				end
 			PauseIR2: ;
 			S_32 :
 				LD_BEN = 1'b1;
