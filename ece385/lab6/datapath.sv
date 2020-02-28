@@ -26,16 +26,16 @@ two_one_MUX mdr_mux0( .in0(data_bus_local), .in1(input_MDR), .select(MIO_EN), .m
 two_one_MUX addr1_mux1( .in0(output_PC_local), .in1(output_SR1_local), .select(ADDR1MUX), .mux_output(output_ADDR1MUX_local) );
 
 logic [15:0] sext_10;
-assign state_10 = {{10{output_IR_local[5]}}, output_IR_local[5:0]};
+assign sext_10 = {{10{output_IR_local[5]}}, output_IR_local[5:0]};
 
 logic [15:0] sext_7;
-assign state_7 = {{7{output_IR_local[8]}}, output_IR_local[8:0]};
+assign sext_7 = {{7{output_IR_local[8]}}, output_IR_local[8:0]};
 
 logic [15:0] sext_5;
-assign state_5 = {{5{output_IR_local[10]}}, output_IR_local[10:0]};
+assign sext_5 = {{5{output_IR_local[10]}}, output_IR_local[10:0]};
 
 logic [15:0] sext_11;
-assign state_11 = {{ 11{output_IR_local[4] }}, output_IR_local[4:0] };
+assign sext_11 = {{ 11{output_IR_local[4] }}, output_IR_local[4:0] };
 
 logic [3:0] gate_set;
 assign gate_set = {GateMDR, GateALU, GatePC, GateMARMUX};
@@ -76,7 +76,7 @@ always_ff @ (posedge Clk) begin
         if(LD_LED)
             output_LED <= IR[11:0];
         else
-            LED = 12'd0;
+            output_LED = 12'd0;
 
 end
 

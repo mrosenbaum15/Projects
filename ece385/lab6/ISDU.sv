@@ -175,7 +175,7 @@ module ISDU (   input logic         Clk,
 						Next_state = S_12;
 
 					4'd0 :
-						Next_state = S_00
+						Next_state = S_00;
 					// You need to finish the rest of opcodes.....
 
 					default :
