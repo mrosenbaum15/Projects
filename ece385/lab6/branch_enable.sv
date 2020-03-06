@@ -19,21 +19,21 @@ module BEN
 
 
 // nzp arrays: 0-n, 1-z, 2-p for both arrays respectively
-logic [2:0] nzp;
-logic [2:0] output_nzp;
+logic n, z, p;
+logic output_n, output_z, output_p;
 
 // flip-flop part - handling next state of nzp values
 always_ff @ (posedge Clk) begin
 
         if(load_branch_en)
-            branch_en_output <= ~( (instructions & output_nzp) == 3'b000);
+            branch_en_output <= ~( (instructions & {output_n, output_z, output_p}) == 3'b000);
         else if(Reset)
             branch_en_output <= 0;
 
         if(load_cc) begin
-            output_nzp[0] <= nzp[0];
-            output_nzp[1] <= nzp[1];
-            output_nzp[2] <= nzp[2];
+            output_n <= n;
+            output_z <= z;
+            output_p <= p;
         end
 
 end
@@ -46,24 +46,24 @@ end
 always_comb begin
 
         if(input_data == 16'b0) begin
-            nzp[0] = 0;
-            nzp[1] = 1;
-            nzp[2] = 0;
+            n = 0;
+            z = 1;
+            p = 0;
         end
         else if(input_data[15] == 0) begin
-            nzp[0] = 0;
-            nzp[1] = 0;
-            nzp[2] = 1;
+            n = 0;
+            z = 0;
+            p = 1;
         end
         else if(input_data[15] == 1) begin
-            nzp[0] = 1;
-            nzp[1] = 0;
-            nzp[2] = 0;
+            n = 1;
+            z = 0;
+            p = 0;
         end
         else begin
-            nzp[0] = 1'hZ;
-            nzp[1] = 1'hZ;
-            nzp[2] = 1'hZ;
+            n = 1'hZ;
+            z = 1'hZ;
+            p = 1'hZ;
         end
 
 end
