@@ -76,7 +76,6 @@ assign MIO_EN = ~OE;
 // You need to make your own datapath module and connect everything to the datapath
 // Be careful about whether Reset is active high or low
 // Added LED output for week 2
-
 datapath d0 ( .Clk(Clk), .Reset(Reset_ah),
 				.LD_MAR(LD_MAR), .LD_MDR(LD_MDR), .LD_IR(LD_IR), .LD_BEN(LD_BEN),
 				.LD_CC(LD_CC), .LD_REG(LD_REG), .LD_PC(LD_PC), .LD_LED(LD_LED),

@@ -1,7 +1,11 @@
 // Inputs: Clk, Reset, load_cc (condition codes), load_branch_en, [15:0] input_data, [2:0] instructions (IR)
 // Outputs: branch_en_output (acting at as a FlipFlop)
-// Description:
-// Purpose:
+// Description: This takes in 16 bits of input, and 3 bits of instruction to
+//					 determine whether or not a branch should occur. Using the input
+//					 bits, BEN will compute the proper NZP values for branching, and then
+//					 output it in branch_en_output. 
+// Purpose: BEN is needed as an indicator on whether the BR operation should occur.
+//				It is instantiated in datapath.sv.
 module BEN
 (
         input logic Clk,

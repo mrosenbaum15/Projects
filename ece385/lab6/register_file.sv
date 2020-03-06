@@ -1,7 +1,12 @@
 // Inputs: Clk, Reset, Load, [15:0] data_bus, ([2:0] DR, SR1, SR2)
 // Outputs: ([15:0] output_SR1, output_SR2)
-// Description:
-// Purpose:
+// Description: For this LC3 implementation, we have an 8x16 register file. This is instantied
+//					 as reg_system below. This is implemented using the 2-always method.
+//					 In the always_ff section, we can load data into the registers on load high.
+//					 A reset indicates that each register should be cleared. In the always_comb
+//					 section, the registers are output into either SR1 or SR2
+// Purpose:		 This module implements the 8x16 register system and is needed in the datapath.
+//					 In datapath.sv, a singular register file is instantiated.
 module register_file
 (
         input logic Clk,

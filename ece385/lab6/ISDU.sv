@@ -55,6 +55,7 @@ module ISDU (   input logic         Clk,
 									Mem_WE
 				);
 
+	// finished the next states based off the given diagram in the lab manual
 	enum logic [4:0] {  Halted,
 						PauseIR1,
 						PauseIR2,
@@ -87,7 +88,8 @@ module ISDU (   input logic         Clk,
 		else
 			State <= Next_state;
 	end
-
+	
+	// much easier to consistently type HIGH and LOW
 	logic HIGH, LOW;
 	assign HIGH = 1'b1;
 	assign LOW = 1'b0;
@@ -151,6 +153,8 @@ module ISDU (   input logic         Clk,
 					Next_state = PauseIR2;
 				else
 					Next_state = S_18;
+					
+			// handling all possible states from S_32 as given from LC3 diagram
 			S_32 :
 				case (Opcode)
 					4'd1 :
@@ -176,15 +180,19 @@ module ISDU (   input logic         Clk,
 
 					4'd0 :
 						Next_state = S_00;
-					// You need to finish the rest of opcodes.....
-
+						
+					4'd13 :
+						Next_state = PauseIR1; // pause state to show LEDs
+						
 					default :
 						Next_state = S_18;
 				endcase
 
+			// all of these states go back to the start (S_18)
 			S_01, S_05, S_09, S_27, S_16_2, S_21, S_12, S_22 :
 				Next_state = S_18;
-
+	
+			// the following next_state logic is taken from state diagram
 			S_06 :
 				Next_state = S_25_1;
 
@@ -239,6 +247,7 @@ module ISDU (   input logic         Clk,
 					GateMDR = 1'b1;
 					LD_IR = 1'b1;
 				end
+			// need to display LEDs in paused state
 			PauseIR1:
 				begin
 					LD_LED = HIGH;
@@ -246,6 +255,7 @@ module ISDU (   input logic         Clk,
 			PauseIR2: ;
 			S_32 :
 				LD_BEN = 1'b1;
+			// ADD
 			S_01 :
 				begin
 					SR1MUX = HIGH;
@@ -256,7 +266,7 @@ module ISDU (   input logic         Clk,
 					LD_REG = HIGH;
 					LD_CC = HIGH;
 				end
-
+			// AND
 			S_05 :
 				begin
 					SR1MUX = HIGH;
@@ -267,7 +277,8 @@ module ISDU (   input logic         Clk,
 					LD_REG = HIGH;
 					LD_CC = HIGH;
 				end
-
+			
+			// NOT
 			S_09 :
 				begin
 					SR1MUX = HIGH;
@@ -278,7 +289,7 @@ module ISDU (   input logic         Clk,
 					LD_REG = HIGH;
 					LD_CC = HIGH;
 				end
-
+			// MAR <- B + off6
 			S_06, S_07 :
 				begin
 					ADDR1MUX = HIGH;
@@ -287,7 +298,8 @@ module ISDU (   input logic         Clk,
 					GateMARMUX = HIGH;
 					LD_MAR = HIGH;
 				end
-
+			
+			// MDR <- M[MAR]
 			S_25_1, S_25_2 :
 				begin
 					Mem_OE = LOW;
@@ -296,7 +308,8 @@ module ISDU (   input logic         Clk,
 					if(State == S_25_2)
 						LD_MDR = HIGH;
 				end
-
+			
+			// DR <- MDR
 			S_27 :
 				begin
 					DRMUX = LOW;
@@ -304,7 +317,8 @@ module ISDU (   input logic         Clk,
 					LD_REG = HIGH;
 					LD_CC = HIGH;
 				end
-
+				
+			// MDR <- SR
 			S_23 :
 				begin
 					SR1MUX = LOW;
@@ -313,19 +327,22 @@ module ISDU (   input logic         Clk,
 					LD_MDR = HIGH;
 				end
 
+			// M[MAR] <- MDR
 			S_16_1, S_16_2 :
 				begin
 					Mem_OE = HIGH;
 					Mem_WE = LOW;
 				end
-
+			
+			// R7 <- PC
 			S_04 :
 				begin
 					DRMUX = IR_11;
 					GatePC = HIGH;
 					LD_REG = HIGH;
 				end
-
+			
+			// PC <- PC + off9/off11
 			S_21, S_22 :
 				begin
 					if(State == S_21)
@@ -337,7 +354,8 @@ module ISDU (   input logic         Clk,
 					PCMUX = 2'd2;
 					LD_PC = HIGH;
 				end
-
+			
+			// PC <- BaseR
 			S_12 :
 				begin
 					ADDR1MUX = HIGH;
@@ -346,6 +364,8 @@ module ISDU (   input logic         Clk,
 					PCMUX = 2'd2;
 					LD_PC = HIGH;
 				end
+				
+			// [BEN]
 			S_00 :
 				begin
 					Mem_OE = HIGH;
