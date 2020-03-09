@@ -41,45 +41,45 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  11 .debug_abbrev 0000118d  00000000  00000000  00005bce  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_line   00001214  00000000  00000000  00006d5b  2**0
+ 12 .debug_line   00001218  00000000  00000000  00006d5b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_frame  0000040c  00000000  00000000  00007f70  2**2
+ 13 .debug_frame  0000040c  00000000  00000000  00007f74  2**2
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00000e8a  00000000  00000000  0000837c  2**0
+ 14 .debug_str    00000e8a  00000000  00000000  00008380  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_loc    00000430  00000000  00000000  00009206  2**0
+ 15 .debug_loc    00000430  00000000  00000000  0000920a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_alt_sim_info 00000010  00000000  00000000  00009638  2**2
+ 16 .debug_alt_sim_info 00000010  00000000  00000000  0000963c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_ranges 00000080  00000000  00000000  00009648  2**3
+ 17 .debug_ranges 00000080  00000000  00000000  00009650  2**3
                   CONTENTS, READONLY, DEBUGGING
- 18 .thread_model 00000003  00000000  00000000  0000a886  2**0
+ 18 .thread_model 00000003  00000000  00000000  0000a88e  2**0
                   CONTENTS, READONLY
- 19 .cpu          0000000c  00000000  00000000  0000a889  2**0
+ 19 .cpu          0000000c  00000000  00000000  0000a891  2**0
                   CONTENTS, READONLY
- 20 .qsys         00000001  00000000  00000000  0000a895  2**0
+ 20 .qsys         00000001  00000000  00000000  0000a89d  2**0
                   CONTENTS, READONLY
- 21 .simulation_enabled 00000001  00000000  00000000  0000a896  2**0
+ 21 .simulation_enabled 00000001  00000000  00000000  0000a89e  2**0
                   CONTENTS, READONLY
- 22 .sysid_hash   00000004  00000000  00000000  0000a897  2**0
+ 22 .sysid_hash   00000004  00000000  00000000  0000a89f  2**0
                   CONTENTS, READONLY
- 23 .sysid_base   00000004  00000000  00000000  0000a89b  2**0
+ 23 .sysid_base   00000004  00000000  00000000  0000a8a3  2**0
                   CONTENTS, READONLY
- 24 .sysid_time   00000004  00000000  00000000  0000a89f  2**0
+ 24 .sysid_time   00000004  00000000  00000000  0000a8a7  2**0
                   CONTENTS, READONLY
- 25 .stderr_dev   00000004  00000000  00000000  0000a8a3  2**0
+ 25 .stderr_dev   00000004  00000000  00000000  0000a8ab  2**0
                   CONTENTS, READONLY
- 26 .stdin_dev    00000004  00000000  00000000  0000a8a7  2**0
+ 26 .stdin_dev    00000004  00000000  00000000  0000a8af  2**0
                   CONTENTS, READONLY
- 27 .stdout_dev   00000004  00000000  00000000  0000a8ab  2**0
+ 27 .stdout_dev   00000004  00000000  00000000  0000a8b3  2**0
                   CONTENTS, READONLY
- 28 .sopc_system_name 00000008  00000000  00000000  0000a8af  2**0
+ 28 .sopc_system_name 00000008  00000000  00000000  0000a8b7  2**0
                   CONTENTS, READONLY
- 29 .quartus_project_dir 00000007  00000000  00000000  0000a8b7  2**0
+ 29 .quartus_project_dir 00000007  00000000  00000000  0000a8bf  2**0
                   CONTENTS, READONLY
- 30 .jdi          00003db5  00000000  00000000  0000a8be  2**0
+ 30 .jdi          00003db5  00000000  00000000  0000a8c6  2**0
                   CONTENTS, READONLY
- 31 .sopcinfo     0005c4d5  00000000  00000000  0000e673  2**0
+ 31 .sopcinfo     0005c4d5  00000000  00000000  0000e67b  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 08000000 l    d  .entry	00000000 .entry
@@ -275,15 +275,17 @@ int main()
  800005c:	defff704 	addi	sp,sp,-36
  8000060:	df000815 	stw	fp,32(sp)
  8000064:	df000804 	addi	fp,sp,32
+	// making simple MACROs for 1 and 0
 	int HIGH = 1;
  8000068:	00800044 	movi	r2,1
  800006c:	e0bff915 	stw	r2,-28(fp)
 	int LOW = 0;
  8000070:	e03ffa15 	stw	zero,-24(fp)
-	int pause;
 	volatile unsigned int total;
 
 	//int i = 0;
+
+	// addresses set in design planner
 	volatile unsigned int *LED_PIO = (unsigned int*)0x90; //make a pointer to access the PIO block
  8000074:	00802404 	movi	r2,144
  8000078:	e0bffb15 	stw	r2,-20(fp)
@@ -301,15 +303,15 @@ int main()
  8000094:	e0fffa17 	ldw	r3,-24(fp)
  8000098:	e0bffb17 	ldw	r2,-20(fp)
  800009c:	10c00015 	stw	r3,0(r2)
-	pause = total = LOW;
+	pause = total = LOW; // sum and pause set to low at first
  80000a0:	e0bffa17 	ldw	r2,-24(fp)
  80000a4:	e0bfff15 	stw	r2,-4(fp)
  80000a8:	e0bff815 	stw	r2,-32(fp)
-//		for (i = 0; i < 100000; i++); //software delay
 //		*LED_PIO |= 0x1; //set LSB
 //		for (i = 0; i < 100000; i++); //software delay
 //		*LED_PIO &= ~0x1; //clear LSB
 
+		// clearing total if reset is high
 		if(*A_RESET_PIO == HIGH)
  80000ac:	e0bffe17 	ldw	r2,-8(fp)
  80000b0:	10c00017 	ldw	r3,0(r2)
@@ -319,6 +321,7 @@ int main()
  80000bc:	e0bffa17 	ldw	r2,-24(fp)
  80000c0:	e0bfff15 	stw	r2,-4(fp)
 
+		// next state is paused state
 		if(*ACC_PIO == LOW)
  80000c4:	e0bffd17 	ldw	r2,-12(fp)
  80000c8:	10c00017 	ldw	r3,0(r2)
@@ -329,6 +332,7 @@ int main()
  80000d8:	e0bff815 	stw	r2,-32(fp)
  80000dc:	00000a06 	br	8000108 <main+0xac>
 
+		// pausing and adding values from switches
 		else if(pause == LOW) {
  80000e0:	e0fff817 	ldw	r3,-32(fp)
  80000e4:	e0bffa17 	ldw	r2,-24(fp)
@@ -344,6 +348,7 @@ int main()
  8000104:	e0bfff15 	stw	r2,-4(fp)
 		}
 
+		// adjusting LEDs
 		*LED_PIO = total;
  8000108:	e0ffff17 	ldw	r3,-4(fp)
  800010c:	e0bffb17 	ldw	r2,-20(fp)

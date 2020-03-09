@@ -10,7 +10,7 @@
 
 module lab7(  	  input	       CLOCK_50, 
 					  input  [3:0]  KEY,
-					  input  [7:0]	 SW,
+					  input  [7:0]	 SW, // added 8 switches for input
 					  output [7:0]  LEDG,
 					  output [12:0] DRAM_ADDR,
 					  output [1:0]  DRAM_BA,
@@ -28,10 +28,10 @@ module lab7(  	  input	       CLOCK_50,
 				  // You need to make sure that the port names here are identical to the port names at 
 				  // the interface in lab7_soc.v
 				  lab7_soc m_lab7_soc (.clk_clk(CLOCK_50),
-											 .switches_wire_export(SW),
-											 .reset_reset_n(KEY[0]),
-											 .a_reset_wire_export(~KEY[2]),
-											 .accumulator_wire_export(~KEY[3]),
+											 .switches_wire_export(SW), // input switches connecting to platform designer
+											 .reset_reset_n(KEY[0]),	// synchronous reset
+											 .a_reset_wire_export(~KEY[2]), // acts as clear for accumulator
+											 .accumulator_wire_export(~KEY[3]), // acts as adder
 											 .led_wire_export(LEDG),
 											 .sdram_wire_addr(DRAM_ADDR),    //  sdram_wire.addr
 											 .sdram_wire_ba(DRAM_BA),      	//  .ba
