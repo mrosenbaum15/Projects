@@ -43,7 +43,8 @@ module lab8( input               CLOCK_50,
                                  DRAM_CKE,     //SDRAM Clock Enable
                                  DRAM_WE_N,    //SDRAM Write Enable
                                  DRAM_CS_N,    //SDRAM Chip Select
-                                 DRAM_CLK      //SDRAM Clock
+                                 DRAM_CLK,     //SDRAM Clock
+				output logic [3:0] LED_output		  // outout LEDs
                     );
 
     logic Reset_h, Clk;
@@ -57,7 +58,8 @@ module lab8( input               CLOCK_50,
     logic [1:0] hpi_addr;
     logic [15:0] hpi_data_in, hpi_data_out;
     logic hpi_r, hpi_w, hpi_cs, hpi_reset;
-
+	 
+	 // creating local variables for input/output of module declarations below
     logic is_ball_local;
     logic [9:0] DrawX_local, DrawY_local;
 
@@ -109,14 +111,15 @@ module lab8( input               CLOCK_50,
     // Use PLL to generate the 25MHZ VGA_CLK.
     // You will have to generate it on your own in simulation.
     vga_clk vga_clk_instance(.inclk0(Clk), .c0(VGA_CLK));
-
-    // TODO: Fill in the connections for the rest of the modules
+		
+	 // using local variables declared above to store outputs
     VGA_controller vga_controller_instance( .*, .Reset(Reset_h), .DrawX(DrawX_local), .DrawY(DrawY_local) );
 
-    // Which signal should be frame_clk?
+    // Which signal should be frame_clk? - VGA_VS
     ball ball_instance( .*, .Reset(Reset_h), .frame_clk(VGA_VS),
                         .DrawX(DrawX_local), .DrawY(DrawY_local), .is_ball(is_ball_local) );
-
+	 
+	 // takes output is_ball from ball above and uses as input, same as DrawX/Y with vga controller
     color_mapper color_instance( .*, .is_ball(is_ball_local), .DrawX(DrawX_local), .DrawY(DrawY_local) );
 
     // Display keycode on hex display

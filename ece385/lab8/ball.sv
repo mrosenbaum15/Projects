@@ -19,7 +19,8 @@ module  ball ( input         Clk,                // 50 MHz clock
                              frame_clk,          // The clock indicating a new frame (~60Hz)
                input [7:0]   keycode,
                input [9:0]   DrawX, DrawY,       // Current pixel coordinates
-               output logic  is_ball             // Whether current pixel belongs to ball or background
+               output logic  is_ball,             // Whether current pixel belongs to ball or background
+					output logic [3:0] LED_output
               );
 
     parameter [9:0] Ball_X_Center = 10'd320;  // Center position on the X axis
@@ -68,12 +69,14 @@ module  ball ( input         Clk,                // 50 MHz clock
             Ball_X_Motion <= Ball_X_Motion_in;
             Ball_Y_Motion <= Ball_Y_Motion_in;
         end
+
     end
     //////// Do not modify the always_ff blocks. ////////
 
-    //void function to check boundaries
+    // void function to check boundaries
+	 // this function will be used when adjusting the motion of the ball
   function void check_boundaries;
-
+		
       if( Ball_Y_Pos + Ball_Size >= Ball_Y_Max ) begin // Ball is at the bottom edge, BOUNCE!
           Ball_Y_Motion_in = (~(Ball_Y_Step) + 1'b1);  // 2's complement.
 			 Ball_X_Motion_in = 10'd0;
@@ -109,41 +112,47 @@ module  ball ( input         Clk,                // 50 MHz clock
             // e.g. Ball_Y_Pos - Ball_Size <= Ball_Y_Min
             // If Ball_Y_Pos is 0, then Ball_Y_Pos - Ball_Size will not be -4, but rather a large positive number.
 				
+				// first ensuring ball is not on the edge
 				check_boundaries();
 				
+				// reacting to keypresses - must check boundaries after changing direction
 				case (keycode)
-
+					 
+					 // A is left
                 a_key :
                     begin
-                        Ball_X_Motion_in = (~(Ball_X_Step) + 1'b1);  // 2's complement.
-                        Ball_Y_Motion_in = 10'd0;
+                        Ball_X_Motion_in = (~(Ball_X_Step) + 1'b1);  // -1 in 2's complement.
+                        Ball_Y_Motion_in = 10'd0; // only move in one direction
                         check_boundaries();
                     end
-
+					 
+					 // S is down
                 s_key :
                     begin
-                        Ball_X_Motion_in = 10'd0;
-                        Ball_Y_Motion_in = Ball_Y_Step;
+                        Ball_X_Motion_in = 10'd0; // only move in one direction
+                        Ball_Y_Motion_in = Ball_Y_Step; // down 1
                         check_boundaries();
                     end
-
+					 
+					 // D is right
                 d_key :
                     begin
-                        Ball_X_Motion_in = Ball_X_Step;
-                        Ball_Y_Motion_in = 10'd0;
+                        Ball_X_Motion_in = Ball_X_Step; // right 1
+                        Ball_Y_Motion_in = 10'd0; // only move in one direction
                         check_boundaries();
                     end
-
+					 
+					 // W is up
                 w_key :
                     begin
-                        Ball_X_Motion_in = 10'd0;
+                        Ball_X_Motion_in = 10'd0; // only move in one direction
                         Ball_Y_Motion_in = (~(Ball_Y_Step) + 1'b1);  // 2's complement.
                         check_boundaries();
                     end
 
-    			default :
+    			default : // not changing direction here
                     begin
-                        Ball_X_Motion_in = Ball_X_Motion_in;
+                        Ball_X_Motion_in = Ball_X_Motion_in; 
                         Ball_Y_Motion_in = Ball_Y_Motion_in;
                     end
 
@@ -182,6 +191,22 @@ module  ball ( input         Clk,                // 50 MHz clock
         /* The ball's (pixelated) circle is generated using the standard circle formula.  Note that while
            the single line is quite powerful descriptively, it causes the synthesis tool to use up three
            of the 12 available multipliers on the chip! */
+		  
+		  /*
+				Setting the LEDs on the board.
+				LED0 is for left
+				LED1 is for down
+				LED2 is for right
+				LED3 is for up
+		  */
+		  if(Ball_X_Motion == 10'd1)
+				LED_output = 4'b0100;
+		  else if(Ball_Y_Motion == 10'd1)
+				LED_output = 4'b0010;
+		  else if(Ball_X_Motion == (~(Ball_X_Step) + 1'b1) )
+				LED_output = 4'b0001;
+		  else 
+				LED_output = 4'b1000;
     end
 
 endmodule
