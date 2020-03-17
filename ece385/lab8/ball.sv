@@ -74,17 +74,22 @@ module  ball ( input         Clk,                // 50 MHz clock
     //void function to check boundaries
   function void check_boundaries;
 
-      if( Ball_Y_Pos + Ball_Size >= Ball_Y_Max )  // Ball is at the bottom edge, BOUNCE!
+      if( Ball_Y_Pos + Ball_Size >= Ball_Y_Max ) begin // Ball is at the bottom edge, BOUNCE!
           Ball_Y_Motion_in = (~(Ball_Y_Step) + 1'b1);  // 2's complement.
-      else if ( Ball_Y_Pos <= Ball_Y_Min + Ball_Size )  // Ball is at the top edge, BOUNCE!
+			 Ball_X_Motion_in = 10'd0;
+		end
+      else if ( Ball_Y_Pos <= Ball_Y_Min + Ball_Size ) begin // Ball is at the top edge, BOUNCE!
           Ball_Y_Motion_in = Ball_Y_Step;
-
-      else if( Ball_X_Pos + Ball_Size >= Ball_X_Max )  // Ball is at the right edge, BOUNCE!
+			 Ball_X_Motion_in = 10'd0;
+		end
+      else if( Ball_X_Pos + Ball_Size >= Ball_X_Max ) begin // Ball is at the right edge, BOUNCE!
           Ball_X_Motion_in = (~(Ball_X_Step) + 1'b1);  // 2's complement.
-
-      else if ( Ball_X_Pos <= Ball_X_Min + Ball_Size )  // Ball is at the left edge, BOUNCE!
+			 Ball_Y_Motion_in = 10'd0;
+		end
+      else if ( Ball_X_Pos <= Ball_X_Min + Ball_Size ) begin // Ball is at the left edge, BOUNCE!
           Ball_X_Motion_in = Ball_X_Step;
-
+			 Ball_Y_Motion_in = 10'd0;
+		end
   endfunction
 
     // You need to modify always_comb block.
@@ -103,43 +108,43 @@ module  ball ( input         Clk,                // 50 MHz clock
             //   both sides of the operator as UNSIGNED numbers.
             // e.g. Ball_Y_Pos - Ball_Size <= Ball_Y_Min
             // If Ball_Y_Pos is 0, then Ball_Y_Pos - Ball_Size will not be -4, but rather a large positive number.
-
-            check_boundaries();
-
-            case (keycode)
+				
+				check_boundaries();
+				
+				case (keycode)
 
                 a_key :
                     begin
                         Ball_X_Motion_in = (~(Ball_X_Step) + 1'b1);  // 2's complement.
                         Ball_Y_Motion_in = 10'd0;
-                        // check_boundaries();
+                        check_boundaries();
                     end
 
                 s_key :
                     begin
                         Ball_X_Motion_in = 10'd0;
                         Ball_Y_Motion_in = Ball_Y_Step;
-                        // check_boundaries();
+                        check_boundaries();
                     end
 
                 d_key :
                     begin
                         Ball_X_Motion_in = Ball_X_Step;
                         Ball_Y_Motion_in = 10'd0;
-                        // check_boundaries();
+                        check_boundaries();
                     end
 
                 w_key :
                     begin
                         Ball_X_Motion_in = 10'd0;
                         Ball_Y_Motion_in = (~(Ball_Y_Step) + 1'b1);  // 2's complement.
-                        // check_boundaries();
+                        check_boundaries();
                     end
 
     			default :
                     begin
-                        Ball_X_Motion_in = Ball_X_Motion;
-                        Ball_Y_motion_in = Ball_Y_Motion;x
+                        Ball_X_Motion_in = Ball_X_Motion_in;
+                        Ball_Y_Motion_in = Ball_Y_Motion_in;
                     end
 
     		endcase

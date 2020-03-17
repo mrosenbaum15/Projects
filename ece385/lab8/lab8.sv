@@ -111,7 +111,7 @@ module lab8( input               CLOCK_50,
     vga_clk vga_clk_instance(.inclk0(Clk), .c0(VGA_CLK));
 
     // TODO: Fill in the connections for the rest of the modules
-    VGA_controller vga_controller_instance( .*, .Reset(Reset_h), .DrawX(DrawX_local), .DrawY(DrawY_local)) );
+    VGA_controller vga_controller_instance( .*, .Reset(Reset_h), .DrawX(DrawX_local), .DrawY(DrawY_local) );
 
     // Which signal should be frame_clk?
     ball ball_instance( .*, .Reset(Reset_h), .frame_clk(VGA_VS),
