@@ -14,7 +14,7 @@ University of Illinois ECE Department
 #include "aes.h"
 
 // Pointer to base address of AES module, make sure it matches Qsys
-volatile unsigned int * AES_PTR = (unsigned int *) 0x00000100;
+volatile unsigned int * AES_PTR = (unsigned int *) 0x000000040;
 
 // Execution mode: 0 for testing, 1 for benchmarking
 int run_mode = 0;
@@ -111,7 +111,7 @@ void shiftRows(unsigned char * byte_shift) {
 void mixColumns(unsigned char * byte_mix) {
 
 	unsigned char holder[MAT_SIZE];
-	int i, j;
+	int i;
 
 	for(i = 0; i < MAT_SIZE; i += 4) {
 
@@ -255,7 +255,7 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 	offset = NUM_ROUNDS * MAT_SIZE;
 	subBytes(msg_holder);
 	shiftRows(msg_holder);
-	addRoundKey(msg_holder, (key_sched + offset);
+	addRoundKey(msg_holder, key_sched + offset);
 
 	pack_message(msg_holder, key_holder, msg_enc, key);
 	// for(i = 0; i < WORD_MAT; ++i) {
