@@ -151,7 +151,6 @@ void mixColumns(unsigned char * byte_mix) {
 void addRoundKey(unsigned char * byte_val, unsigned char * byte_schedule) {
 
 	int i;
-
 	for(i = 0; i < MAT_SIZE; ++i) {
 		byte_val[i] ^= byte_schedule[i];
 	}
@@ -241,6 +240,18 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 	}
 
 	keyExpansion(key_holder, key_sched);
+
+	printf("Key Expansion: \n");
+	for(i = 0; i < MAT_SIZE * 11; ++i) {
+
+		if(i % WORD_MAT == 0) {
+			printf("\n");
+		}
+
+		printf("%x", key_sched[i]);
+	}
+	printf("\n");
+
 	addRoundKey(msg_holder, key_sched);
 
 	for(i = 1; i < NUM_ROUNDS; ++i) {
@@ -256,6 +267,12 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 	subBytes(msg_holder);
 	shiftRows(msg_holder);
 	addRoundKey(msg_holder, key_sched + offset);
+
+	printf("Last Round Key Added: \n");
+	for(i = 0; i < MAT_SIZE; ++i) {
+		printf("%x", key_sched[i + offset]);
+	}
+	printf("\n");
 
 	pack_message(msg_holder, key_holder, msg_enc, key);
 	// for(i = 0; i < WORD_MAT; ++i) {
@@ -311,6 +328,16 @@ int main()
 			for(i = 0; i < 4; i++){
 				printf("%08x", msg_enc[i]);
 			}
+
+			for(i = 0; i < WORD_MAT; ++i) {
+					AES_PTR[i] = key[i];
+			}
+
+			AES_PTR[10] = 0xDEADBEEF;
+			if(AES_PTR[10] != 0xDEADBEEF) {
+					printf("Error!");
+			}
+
 			printf("\n");
 			decrypt(msg_enc, msg_dec, key);
 			printf("\nDecrypted message is: \n");

@@ -52,13 +52,13 @@ always_ff @ (posedge CLK) begin
     else if(AVL_WRITE && AVL_CS) begin
 
           if(AVL_BYTE_EN[3] == 1)
-              reg_sys[AVL_ADDR][31:24] = AVL_WRITEDATA[31:24];
+              reg_sys[AVL_ADDR][31:24] <= AVL_WRITEDATA[31:24];
           if(AVL_BYTE_EN[2] == 1)
-              reg_sys[AVL_ADDR][23:16] = AVL_WRITEDATA[23:16];
+              reg_sys[AVL_ADDR][23:16] <= AVL_WRITEDATA[23:16];
           if(AVL_BYTE_EN[1] == 1)
-              reg_sys[AVL_ADDR][15:8] = AVL_WRITEDATA[15:8];
+              reg_sys[AVL_ADDR][15:8] <= AVL_WRITEDATA[15:8];
           if(AVL_BYTE_EN[0] == 1)
-              reg_sys[AVL_ADDR][7:0] = AVL_WRITEDATA[7:0];
+              reg_sys[AVL_ADDR][7:0] <= AVL_WRITEDATA[7:0];
 
     end
 
@@ -66,11 +66,11 @@ end
 
     always_comb begin
 
-        EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
-
-        if(AVL_READ && AVL_CS)
+       assign EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
+s
+       if(AVL_READ && AVL_CS)
             AVL_READDATA = reg_sys[AVL_ADDR];
-        else
+       else
             AVL_READDATA = 32'b0;
 
     end
