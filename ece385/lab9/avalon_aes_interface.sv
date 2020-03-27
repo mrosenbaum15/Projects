@@ -17,7 +17,20 @@ Register Map:
    15: 32bit Done Register
 
 ************************************************************************/
-
+/*
+Module: avalon_aes_interface (avalon_aes_interface.sv)
+	Inputs: CLK, RESET, AVL_READ, AVL_WRITE, AVL_CS, 
+			  ([3:0] AVL_BYTE_EN, AVL_ADDR), [31:0] AVL_WRITE_DATA
+Outputs: ([31:0] AVL_READ_DATA, EXPORT_DAATA)
+Description: This is the AVALON-MM Interface that is used for the AES Decryption Core.
+				 A register system containing 16 32-bit registers is created, and the registers
+				 hold information on the AES Key (0-3), Encrypted (4-7) and Decrypted (8-11) Messages,
+				 as well as start and end addresses (14-15). This module takes information from the
+				 AVL input variables to determine what should be loaded in or read from the registers.
+Purpose: As explained in the description section, the purpose of this module is to be the 
+   interface between the hardware and software via the AES Decryption core from the QSys file.
+	It allows encryption and decryption information to be displayed on the board.
+*/
 module avalon_aes_interface (
 	// Avalon Clock Input
 	input logic CLK,
@@ -38,17 +51,20 @@ module avalon_aes_interface (
 	output logic [31:0] EXPORT_DATA		// Exported Conduit Signal to LEDs
 );
 
+// 16 32-bit registers
 logic [31:0] reg_sys [15:0];
 
 always_ff @ (posedge CLK) begin
-
+	 
+	 // clear all 16 registers on reset
     if(RESET) begin
 
         for(int i = 0; i < 16; ++i)
             reg_sys[i] <= 32'b0;
 
     end
-
+	
+	 // check each bit of byte_en and use it to write to specific bits of register system
     else if(AVL_WRITE && AVL_CS) begin
 
           if(AVL_BYTE_EN[3] == 1)
@@ -65,9 +81,11 @@ always_ff @ (posedge CLK) begin
 end
 
     always_comb begin
-
+		
+		 // setting export_data to the first 2 B and last 2 B of key
        assign EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
-s
+		 
+		 // for reading data (decryption)
        if(AVL_READ && AVL_CS)
             AVL_READDATA = reg_sys[AVL_ADDR];
        else

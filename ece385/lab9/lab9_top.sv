@@ -7,7 +7,21 @@ Christine Chen, Fall 2013
 For use with ECE 385 Experiment 9
 University of Illinois ECE Department
 ************************************************************************/
-
+/*
+Module: lab9_top (lab9_top.sv)
+	Inputs: CLOCK_50, [3:0] KEY, [7:0] SW, [31:0] DRAM_DQ
+Outputs: [7:0] LEDG, [17:0] LEDR, [6:0] HEX0-7, [12:0] DRAM_ADDR,
+			[1:0] DRAM_BA, DRAM_CAS_N,	DRAM_CKE, DRAM_CS_N,
+			[31:0] DRAM_DQ, [3:0] DRAM_DQM, DRAM_RAS_N, DRAM_WE_N, DRAM_CLK
+Description: This is the top-level module for the experiment, and acts as the interface 
+         between the NIOS II software and hardware created in SystemVerilog and 
+         on the DE2-115 board. It contains the lab9_soc module which contains the 
+         connections to PIO components as well as SDRAM and the AES Decryption Core.
+Purpose: As explained in the description section, the purpose of this module is to be the 
+   interface between the hardware and generated QSys file. It allows information 
+   to be transferred between the DE2-115 board and the C code that handles the 
+   encryption and decryption logic.
+*/
 module lab9_top (
 	input  logic        CLOCK_50,
 	input  logic [1:0]  KEY,

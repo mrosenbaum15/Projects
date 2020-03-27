@@ -1,6 +1,7 @@
 #ifndef aes_h_
 #define aes_h_
 
+// macros for main.c (commonly used numbers)
 #define MAT_SIZE 16
 #define WORD_MAT 4
 #define NUM_ROUNDS 10

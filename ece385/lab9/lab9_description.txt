@@ -1,0 +1,3 @@
+Expected demo points for Week 1:
+
+5/5 - everything works properly in encryption process, and key is displayed on the HEX displays.
