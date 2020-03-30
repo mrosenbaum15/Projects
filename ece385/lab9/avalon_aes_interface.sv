@@ -19,7 +19,7 @@ Register Map:
 ************************************************************************/
 /*
 Module: avalon_aes_interface (avalon_aes_interface.sv)
-	Inputs: CLK, RESET, AVL_READ, AVL_WRITE, AVL_CS, 
+	Inputs: CLK, RESET, AVL_READ, AVL_WRITE, AVL_CS,
 			  ([3:0] AVL_BYTE_EN, AVL_ADDR), [31:0] AVL_WRITE_DATA
 Outputs: ([31:0] AVL_READ_DATA, EXPORT_DAATA)
 Description: This is the AVALON-MM Interface that is used for the AES Decryption Core.
@@ -27,7 +27,7 @@ Description: This is the AVALON-MM Interface that is used for the AES Decryption
 				 hold information on the AES Key (0-3), Encrypted (4-7) and Decrypted (8-11) Messages,
 				 as well as start and end addresses (14-15). This module takes information from the
 				 AVL input variables to determine what should be loaded in or read from the registers.
-Purpose: As explained in the description section, the purpose of this module is to be the 
+Purpose: As explained in the description section, the purpose of this module is to be the
    interface between the hardware and software via the AES Decryption core from the QSys file.
 	It allows encryption and decryption information to be displayed on the board.
 */
@@ -54,8 +54,19 @@ module avalon_aes_interface (
 // 16 32-bit registers
 logic [31:0] reg_sys [15:0];
 
+logic aes_done_local;
+logic [127:0] aes_msg_dec_local;
+logic key_holder;
+logic msg_enc_holder;
+
+assign key_holder = { reg_sys[0], reg_sys[1], reg_sys[2], reg_sys[3] };
+assign msg_enc_holder = { reg_sys[4], reg_sys[5], reg_sys[6], reg_sys[7] };
+
+AES aes_0( .*, .AES_START(reg_sys[14][0]), .AES_DONE(aes_done_local),
+            .AES_KEY(key_holder), .AES_MSG_ENC(msg_enc_holder), .AES_MSG_DEC(aes_msg_dec_local) );
+
 always_ff @ (posedge CLK) begin
-	 
+
 	 // clear all 16 registers on reset
     if(RESET) begin
 
@@ -63,7 +74,17 @@ always_ff @ (posedge CLK) begin
             reg_sys[i] <= 32'b0;
 
     end
-	
+
+    else if(aes_done_local) begin 
+
+        reg_sys[11] <= aes_msg_dec_local[31:0];
+        reg_sys[10] <= aes_msg_dec_local[63:32];
+        reg_sys[9] <= aes_msg_dec_local[95:64];
+        reg_sys[8] <= aes_msg_dec_local[127:96];
+
+        reg_sys[15] <= 32'hffffffff;
+
+    end
 	 // check each bit of byte_en and use it to write to specific bits of register system
     else if(AVL_WRITE && AVL_CS) begin
 
@@ -81,10 +102,10 @@ always_ff @ (posedge CLK) begin
 end
 
     always_comb begin
-		
+
 		 // setting export_data to the first 2 B and last 2 B of key
        assign EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
-		 
+
 		 // for reading data (decryption)
        if(AVL_READ && AVL_CS)
             AVL_READDATA = reg_sys[AVL_ADDR];
