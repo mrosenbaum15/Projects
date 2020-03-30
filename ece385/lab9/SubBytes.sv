@@ -8,7 +8,7 @@ For use with ECE 385 Experiment 9
 University of Illinois ECE Department
 ************************************************************************/
 
-// SubBytes 
+// SubBytes
 // Input : System Clock, input Byte
 // Output: SubBytes transformation of the Byte
 module SubBytes (
@@ -164,4 +164,32 @@ always_ff @ (negedge clk)
 	8'hf8: out <= 8'he1;    8'hf9: out <= 8'h69;    8'hfa: out <= 8'h14;    8'hfb: out <= 8'h63;
 	8'hfc: out <= 8'h55;    8'hfd: out <= 8'h21;    8'hfe: out <= 8'h0c;    8'hff: out <= 8'h7d;
 	endcase
+endmodule
+
+// InvSub_16
+// Input : System Clock, 128 input bits
+// Output: InvSubBytes transformation of all 128 bits
+module InvSub_16 (
+					input logic clk,
+					input logic [127:0] in,
+					output logic [127:0] out
+);
+
+		InvSubBytes isb0( .clk(clk), .in(in[7:0]), .out(out[7:0]) );
+		InvSubBytes isb1( .clk(clk), .in(in[15:8]), .out(out[15:8]) );
+		InvSubBytes isb2( .clk(clk), .in(in[23:16]), .out(out[23:16]) );
+		InvSubBytes isb3( .clk(clk), .in(in[31:24]), .out(out[31:24]) );
+		InvSubBytes isb4( .clk(clk), .in(in[39:32]), .out(out[39:32]) );
+		InvSubBytes isb5( .clk(clk), .in(in[47:40]), .out(out[47:40]) );
+		InvSubBytes isb6( .clk(clk), .in(in[55:48]), .out(out[55:48]) );
+		InvSubBytes isb7( .clk(clk), .in(in[63:56]), .out(out[63:56]) );
+		InvSubBytes isb8( .clk(clk), .in(in[71:64]), .out(out[71:64]) );
+		InvSubBytes isb9( .clk(clk), .in(in[79:72]), .out(out[79:72]) );
+		InvSubBytes isb10( .clk(clk), .in(in[87:80]), .out(out[87:80]) );
+		InvSubBytes isb11( .clk(clk), .in(in[95:88]), .out(out[95:88]) );
+		InvSubBytes isb12( .clk(clk), .in(in[103:96]), .out(out[103:96]) );
+		InvSubBytes isb13( .clk(clk), .in(in[111:104]), .out(out[111:104]) );
+		InvSubBytes isb14( .clk(clk), .in(in[119:102]), .out(out[119:102]) );
+		InvSubBytes isb15( .clk(clk), .in(in[127:120]), .out(out[127:120]) );
+
 endmodule
