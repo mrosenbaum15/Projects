@@ -5,7 +5,7 @@
 //                   Both a 32 bit and 128 bit 4:1 MUX is needed, so the we avoid repetition
 //                   by utilizing the parameter size function.
 // Purpose: A 32 bit 4:1 MUX is needed in AES.sv to select proper word of the 128 bits
-            out of 4 possible words. A 128 bit 4:1 MUX is needed in AES.sv to determine the state of the message (where it is in sequence of shift, sub, round key, mix col).
+//            out of 4 possible words. A 128 bit 4:1 MUX is needed in AES.sv to determine the state of the message (where it is in sequence of shift, sub, round key, mix col).
 module MUX_41 #(parameter width = 32)
 (
 			input logic [width - 1:0] in0,
@@ -45,13 +45,13 @@ module selector
 
 logic [31:0] selected_bits; // selecting 32 bits
 
-always_ff @ (posedge CLK)) begin
+always_ff @ (posedge CLK) begin
 
-        if(select == 2'b00)
+        if(select == 2'd3)
             data_out[31:0] <= out_bits;
-        else if(select == 2'b01)
+        else if(select == 2'd2)
             data_out[63:32] <= out_bits;
-        else if(select == 2'b10)
+        else if(select == 2'd1)
             data_out[95:64] <= out_bits;
         else
             data_out[127:96] <= out_bits;

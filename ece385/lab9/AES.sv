@@ -30,11 +30,11 @@ logic cur_instruction; // from MUX selecting between 4 loop actions
 logic [1407:0] total_key_sched;
 
 // NEED:  (two 4:1 MUX 32 & 128b), 1:4 decoder, AES_CONTROL
-128bit_reg key_SR( .Clk(CLK), .Reset(RESET), .Load1(load_key), .Load2(load_aes_enc),
+SR_128b key_SR( .Clk(CLK), .Reset(RESET), .Load1(load_key), .Load2(load_aes_enc),
 				   .data_1(cur_instruction), .data_2(AES_MSG_ENC), .Data_Out(cur_msg) );
 
 // KEY EXPANSION
-counter k_counter( .*, RESET(c_reset[1]), add_bool(c_add_bool[1]), .counter_type(2'd1), .count_out(round[1]) );
+counter k_counter( .*, .RESET(c_reset[1]), .add_bool(c_add_bool[1]), .counter_type(2'd1), .count_out(round[1]) );
 KeyExpansion key_exp_INV( .clk(CLK), .Cipherkey(AES_KEY), .KeySchedule(total_key_sched) );
 
 // invShiftRows
@@ -45,7 +45,7 @@ InvSub_16 sub_16_INV ( .clk(CLK), .in(cur_msg), .out(output_isb) );
 
 // ADD ROUND KEY
 counter r_counter( .*, .RESET(c_reset[0]), .add_bool(c_add_bool[0]), .counter_type(2'd0), .count_out(round[0]) );
-addRoundKey add_round_key_INV( .*, .round_num(cur_round), .msg_out(output_ark) );
+addRoundKey add_round_key_INV( .*, .round_num(round[0]), .msg_output(output_ark) );
 
 counter mc_counter( .*, .RESET(c_reset[3]), .add_bool(c_add_bool[3]), .counter_type(2'd2), .count_out(round[3]) ); // mix column counter
 

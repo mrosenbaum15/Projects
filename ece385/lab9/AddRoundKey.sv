@@ -5,7 +5,7 @@ module addRoundKey(
         input logic [1407:0] total_key_sched,
         input logic [127:0] cur_msg,
         input logic [3:0] round_num,
-        output logic [3:0] msg_out
+        output logic [3:0] msg_output
 );
 
 logic [127:0] cur_key;

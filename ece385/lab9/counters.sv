@@ -23,7 +23,7 @@ always_comb begin
 
     if(counter_type == 2'd0)
         count_total = 5'd10;
-    else if(counter_type == 2'd1);
+    else if(counter_type == 2'd1)
         count_total = 5'd24;
     else
         count_total = 5'd4;

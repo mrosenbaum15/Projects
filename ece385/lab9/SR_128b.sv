@@ -4,7 +4,7 @@
 //					 for a 4-bit shift register, but is now extended to 128 bits.
 // Purpose: A 128-bit shift register is needed to whole important key and message encryption values
 //				The module is instantiated in AES.sv
-module 128bit_reg (input  logic Clk, Reset, Load1, Load2
+module SR_128b (input  logic Clk, Reset, Load1, Load2,
 	      input  logic [127:0]  data_1, data_2, // 128-bit extension
 	      output logic [127:0]  Data_Out); // 128-bit extension
 
