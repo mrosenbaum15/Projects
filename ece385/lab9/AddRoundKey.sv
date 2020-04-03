@@ -1,15 +1,13 @@
-
-
-
 module addRoundKey(
         input logic [1407:0] total_key_sched,
         input logic [127:0] cur_msg,
-        input logic [3:0] round_num,
+        input logic [4:0] round_num,
         output logic [127:0] msg_output
 );
 
 logic [127:0] cur_key;
 
+// selecting which part of the schedule we are on based off of the round number
 always_comb begin
 
     if(round_num == 4'd0)
@@ -36,7 +34,8 @@ always_comb begin
         cur_key = total_key_sched[1407:1280];
     else
         cur_key = 128'd0;
-
+	
+	 // XOR to calculate current output
     msg_output = cur_msg ^ cur_key;
 
 end

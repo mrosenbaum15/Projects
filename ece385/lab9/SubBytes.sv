@@ -174,7 +174,7 @@ module InvSub_16 (
 					input logic [127:0] in,
 					output logic [127:0] out
 );
-
+		// have to dereference the aes_box lookup table 16 times
 		InvSubBytes isb0( .clk(clk), .in(in[7:0]), .out(out[7:0]) );
 		InvSubBytes isb1( .clk(clk), .in(in[15:8]), .out(out[15:8]) );
 		InvSubBytes isb2( .clk(clk), .in(in[23:16]), .out(out[23:16]) );

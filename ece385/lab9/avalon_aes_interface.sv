@@ -57,9 +57,13 @@ logic [31:0] reg_sys [15:0];
 logic aes_done_local;
 logic [127:0] aes_msg_dec_local, key_holder, msg_enc_holder;
 
+// holds the key
 assign key_holder = { reg_sys[0], reg_sys[1], reg_sys[2], reg_sys[3] };
+
+// holds the encrypted essage
 assign msg_enc_holder = { reg_sys[4], reg_sys[5], reg_sys[6], reg_sys[7] };
 
+// creating AES module, which has state machine in it
 AES aes_0( .*, .AES_START(reg_sys[14][0]), .AES_DONE(aes_done_local),
             .AES_KEY(key_holder), .AES_MSG_ENC(msg_enc_holder), .AES_MSG_DEC(aes_msg_dec_local) );
 
@@ -87,11 +91,10 @@ always_ff @ (posedge CLK) begin
               reg_sys[AVL_ADDR][7:0] <= AVL_WRITEDATA[7:0];
 
     end
-
+	
+	 // indicate that operation is done in R15 and then write decrypted message to R8-R11
 	 if(aes_done_local) begin
-			$display("Got here");
 		  reg_sys[15] <= 32'hffffffff;
-
 	 
 		  reg_sys[11] <= aes_msg_dec_local[31:0];
         reg_sys[10] <= aes_msg_dec_local[63:32];

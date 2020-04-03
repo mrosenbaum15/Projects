@@ -3,19 +3,19 @@ module control_unit
 		input logic CLK,
 		input logic RESET,
 		input logic AES_START,
-		input logic [3:0] num_round, mc_round, instr_round,
-		input logic [4:0] key_round,
+		input logic [4:0] round [3:0],
 		output logic [3:0] round_reset, round_bool,
 		output logic AES_DONE, Load_R0, Load_Key
 );
 
 
 // Declare signals curr_state, next_state of type enum
-// starting with A - add operations
-// starting with S - shift operations
+// r0 is add round key before loop, r1-r9 are within loop, and r10 is after loop
+// halted is waiting state, finished after every round is finished
 enum logic [3:0] { Halted, key_expansion, finished, mc_inv, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 }
 						curr_state, next_state;
 
+// so we don't have to retype 1'b1 or 1'b0
 logic HIGH, LOW;
 assign HIGH = 1'b1;
 assign LOW = 1'b0;
@@ -32,7 +32,8 @@ end
 
 // 0 - round, 1 - key, 2 - instruction, 3 - mix columns
 always_comb begin
-
+	
+	// setting default output values
 	next_state = curr_state;
 	round_reset = 4'b1110;
 	round_bool = 4'b0000;
@@ -40,6 +41,8 @@ always_comb begin
 	Load_R0 = LOW;
 	Load_Key = LOW;
 	
+	// order of the rounds: Halted -> key_expansion -> r0 -> r1 -> invMixCol -> r2 -> invMixCol -> r3... r10 -> finished
+	// if the if conidition does not hit within each state, this means counter condition isn't satisfied, so machine keeps current state
 	unique case(curr_state)
 	
 		Halted:
@@ -47,22 +50,22 @@ always_comb begin
 					next_state = key_expansion;
 					
 		key_expansion:
-				if(key_round == 5'd24)
+				if(round[1] == 5'd24)
 					next_state = r0;
 
 		r0:	
-				if(instr_round == 5'd2)
+				if(round[2] == 5'd2)
 					next_state = r1;
 					
 		r1, r2, r3, r4, r5, r6, r7, r8, r9:
-				if(instr_round == 5'd3)
+				if(round[2] == 5'd3)
 					next_state = mc_inv;
 					
 		mc_inv:
-				
-				if(mc_round == 5'd4) begin
-					
-					case(num_round)
+				// ensuring invMixCol is done
+				if(round[3] == 5'd4) begin
+					// determing which state to return to, since invMixCols happens between states r1-r10
+					case(round[0])
 						
 						5'd2:	 next_state = r2;
 						5'd3:  next_state = r3;
@@ -79,68 +82,37 @@ always_comb begin
 					
 				end
 		r10:
-				if(instr_round == 5'd3)
+				if(round[2] == 5'd3)
 					next_state = finished;
 		
 		finished:		
-				if(AES_START != 1)
+				if(AES_START == 1)
 					next_state = Halted;
 		
 		default: 		next_state = Halted;
 
-//		r1:
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r2:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//		
-//		r3:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r4:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r5:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r6:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//		
-//		r7:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r8:	
-//				if(instr_round == 5'd3)
-//					next_state = mc_inv;
-//					
-//		r9:	
-//				if(instr_round == 5'd3)
-//					next_state = r2;
 	endcase
 	
+	// assigning output values
 	case(curr_state)
 		
 		Halted:	;
 		
+		// key expansion takes a while, so the counter ensures that it is fully finished
 		key_expansion:	
 		
-				if(key_round == 5'd24)
+				if(round[1] == 5'd24)
 					round_bool[1] = LOW;
 				else begin
 					round_bool[1] = HIGH;
 					Load_R0 = HIGH;
 				end
-				
+		
+		// checking if instr round is equal to 2, which is for add round key
+		// if it is, load the current key. otherwise, wait until it is time for add round key
 		r0:
 		
-				if(instr_round == 5'd2) begin
+				if(round[2] == 5'd2) begin
 					round_reset[2] = HIGH;
 					round_bool[2] = LOW;
 					Load_Key = HIGH;
@@ -154,10 +126,12 @@ always_comb begin
 					round_reset[0] = HIGH;
 					round_bool[0] = LOW;
 				end
-				
+		
+		// must either wait until all 4 operations have occured (first condition)
+		// or increment the round and load the current key (second condition)
 		r1, r2, r3, r4, r5, r6, r7, r8, r9, r10:
 				
-				if(instr_round == 5'd3) begin
+				if(round[2] == 5'd3) begin
 					round_reset[2] = LOW;
 					round_bool[2] = LOW;
 					Load_Key = LOW;
@@ -170,10 +144,11 @@ always_comb begin
 					Load_Key = HIGH;
 					round_bool[0] = LOW;
 				end
-				
+		
+		// ensure that invMixCol is done. If it is, reset its ocunter. Otherwise, increment and wait
 		mc_inv:
 		
-				if(mc_round == 5'd4) begin
+				if(round[3] == 5'd4) begin
 					round_reset[2] = HIGH;
 					round_reset[3] = HIGH;
 					round_bool[3] = LOW;
@@ -189,7 +164,8 @@ always_comb begin
 					round_reset[0] = LOW;
 					round_bool[0] = LOW;
 				end
-				
+		
+		// setting done to high to be output to AES
 		finished:		AES_DONE = HIGH;
 		
 	endcase

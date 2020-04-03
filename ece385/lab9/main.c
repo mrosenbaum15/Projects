@@ -382,21 +382,37 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
  */
 void decrypt(unsigned int * msg_enc, unsigned int * msg_dec, unsigned int * key)
 {
-	// Implement this function
-	while(AES_PTR[15] == 0x00000000) {}
 
 	int i;
+
+	// wait for DONE to be indicated in hardware
+	while(AES_PTR[15] == 0x00000000) {}
+
+  // setting msg_dec value to values determined in the hardware
 	for(i = 0; i < WORD_MAT; ++i) {
 		msg_dec[i] = AES_PTR[i+8];
 	}
 
-	for(i = 0; i < MAT_SIZE; ++i) {
-		if(i % 4 == 0)
-			printf("\n");
-		printf("%08x", AES_PTR[i]);
-	}
-
+	// start register set to low
 	AES_PTR[14] = 0x00000000;
+
+	// printing key, enc, dec, start, and end values
+	printf("\nFINAL REG CONTENTS:\n");
+	for(i = 0; i < MAT_SIZE; ++i) {
+			if(i % 4 == 0) {
+				printf("\n");
+				if(!i)
+					printf("REG 0-3 (KEY): ");
+				else if(i == 4)
+					printf("REG 4-7 (MSG ENC): ");
+				else if(i == 8)
+					printf("REG 8-11 (MSG DEC): ");
+				else
+					printf("REG 12-15 (START, END): ");
+			}
+			printf("%08x", AES_PTR[i]);
+		}
+
 }
 
 /** main
@@ -405,9 +421,6 @@ void decrypt(unsigned int * msg_enc, unsigned int * msg_dec, unsigned int * key)
  */
 int main()
 {
-	// r/w HW?
-	AES_PTR[15] = 0xDEADBEEF;
-	printf("%08x", AES_PTR[15]);
 
 	// Input Message and Key as 32x 8-bit ASCII Characters ([33] is for NULL terminator)
 	unsigned char msg_ascii[33];
@@ -445,9 +458,12 @@ int main()
 					AES_PTR[i] = msg_enc[i-4];
 			}
 
+			// I forgot to do this and it took me forever to figure out why I had an infinite loop in decryption method
+			AES_PTR[14] = 0x00000001;
+
 			printf("\n");
 			decrypt(msg_enc, msg_dec, key);
-			printf("\nDecrypted message is: \n");
+			printf("\n\nDecrypted message is: \n");
 			for(i = 0; i < 4; i++){
 				printf("%08x", msg_dec[i]);
 			}
