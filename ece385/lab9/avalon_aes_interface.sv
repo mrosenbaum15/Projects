@@ -55,9 +55,7 @@ module avalon_aes_interface (
 logic [31:0] reg_sys [15:0];
 
 logic aes_done_local;
-logic [127:0] aes_msg_dec_local;
-logic key_holder;
-logic msg_enc_holder;
+logic [127:0] aes_msg_dec_local, key_holder, msg_enc_holder;
 
 assign key_holder = { reg_sys[0], reg_sys[1], reg_sys[2], reg_sys[3] };
 assign msg_enc_holder = { reg_sys[4], reg_sys[5], reg_sys[6], reg_sys[7] };
@@ -75,16 +73,7 @@ always_ff @ (posedge CLK) begin
 
     end
 
-    else if(aes_done_local) begin 
 
-        reg_sys[11] <= aes_msg_dec_local[31:0];
-        reg_sys[10] <= aes_msg_dec_local[63:32];
-        reg_sys[9] <= aes_msg_dec_local[95:64];
-        reg_sys[8] <= aes_msg_dec_local[127:96];
-
-        reg_sys[15] <= 32'hffffffff;
-
-    end
 	 // check each bit of byte_en and use it to write to specific bits of register system
     else if(AVL_WRITE && AVL_CS) begin
 
@@ -99,12 +88,24 @@ always_ff @ (posedge CLK) begin
 
     end
 
+	 if(aes_done_local) begin
+			$display("Got here");
+		  reg_sys[15] <= 32'hffffffff;
+
+	 
+		  reg_sys[11] <= aes_msg_dec_local[31:0];
+        reg_sys[10] <= aes_msg_dec_local[63:32];
+        reg_sys[9] <= aes_msg_dec_local[95:64];
+        reg_sys[8] <= aes_msg_dec_local[127:96];    
+
+    end
+
 end
 
     always_comb begin
 
 		 // setting export_data to the first 2 B and last 2 B of key
-       assign EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
+       EXPORT_DATA = { reg_sys[0][31:16], reg_sys[3][15:0] };
 
 		 // for reading data (decryption)
        if(AVL_READ && AVL_CS)

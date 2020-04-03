@@ -189,7 +189,7 @@ module InvSub_16 (
 		InvSubBytes isb11( .clk(clk), .in(in[95:88]), .out(out[95:88]) );
 		InvSubBytes isb12( .clk(clk), .in(in[103:96]), .out(out[103:96]) );
 		InvSubBytes isb13( .clk(clk), .in(in[111:104]), .out(out[111:104]) );
-		InvSubBytes isb14( .clk(clk), .in(in[119:102]), .out(out[119:102]) );
+		InvSubBytes isb14( .clk(clk), .in(in[119:112]), .out(out[119:112]) );
 		InvSubBytes isb15( .clk(clk), .in(in[127:120]), .out(out[127:120]) );
 
 endmodule

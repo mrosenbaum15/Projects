@@ -329,16 +329,16 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 	keyExpansion(key_holder, key_sched);
 
 	// printing each Cipher Key
-	printf("Key Expansion: \n");
-	for(i = 0; i < MAT_SIZE * 11; ++i) {
-
-		if(i % WORD_MAT == 0) {
-			printf("\n");
-		}
-
-		printf("%x", key_sched[i]);
-	}
-	printf("\n");
+//	printf("Key Expansion: \n");
+//	for(i = 0; i < MAT_SIZE * 11; ++i) {
+//
+//		if(i % WORD_MAT == 0) {
+//			printf("\n");
+//		}
+//
+//		printf("%x", key_sched[i]);
+//	}
+//	printf("\n");
 
 	// adding first round key
 	addRoundKey(msg_holder, key_sched);
@@ -362,11 +362,11 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 	addRoundKey(msg_holder, key_sched + offset);
 
 	// showing last round key
-	printf("Last Round Key Added: \n");
-	for(i = 0; i < MAT_SIZE; ++i) {
-		printf("%x", key_sched[i + offset]);
-	}
-	printf("\n");
+//	printf("Last Round Key Added: \n");
+//	for(i = 0; i < MAT_SIZE; ++i) {
+//		printf("%x", key_sched[i + offset]);
+//	}
+//	printf("\n");
 
 	// helper function setting output
 	pack_message(msg_holder, key_holder, msg_enc, key);
@@ -383,6 +383,20 @@ void encrypt(unsigned char * msg_ascii, unsigned char * key_ascii, unsigned int 
 void decrypt(unsigned int * msg_enc, unsigned int * msg_dec, unsigned int * key)
 {
 	// Implement this function
+	while(AES_PTR[15] == 0x00000000) {}
+
+	int i;
+	for(i = 0; i < WORD_MAT; ++i) {
+		msg_dec[i] = AES_PTR[i+8];
+	}
+
+	for(i = 0; i < MAT_SIZE; ++i) {
+		if(i % 4 == 0)
+			printf("\n");
+		printf("%08x", AES_PTR[i]);
+	}
+
+	AES_PTR[14] = 0x00000000;
 }
 
 /** main
@@ -391,6 +405,10 @@ void decrypt(unsigned int * msg_enc, unsigned int * msg_dec, unsigned int * key)
  */
 int main()
 {
+	// r/w HW?
+	AES_PTR[15] = 0xDEADBEEF;
+	printf("%08x", AES_PTR[15]);
+
 	// Input Message and Key as 32x 8-bit ASCII Characters ([33] is for NULL terminator)
 	unsigned char msg_ascii[33];
 	unsigned char key_ascii[33];
@@ -423,9 +441,8 @@ int main()
 					AES_PTR[i] = key[i];
 			}
 
-			AES_PTR[10] = 0xDEADBEEF;
-			if(AES_PTR[10] != 0xDEADBEEF) {
-					printf("Error!");
+			for(i = WORD_MAT; i < 8; ++i) {
+					AES_PTR[i] = msg_enc[i-4];
 			}
 
 			printf("\n");

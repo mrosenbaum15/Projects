@@ -14,8 +14,8 @@ module SR_128b (input  logic Clk, Reset, Load1, Load2,
 			  Data_Out <= 128'h0;
 		 else if (Load1)
 			  Data_Out <= data_1;
-         else if (Load2)
-              Data_Out <= data_2;
+       else if (Load2)
+           Data_Out <= data_2;
     end
 
 endmodule
