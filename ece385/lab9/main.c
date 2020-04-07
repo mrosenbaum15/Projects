@@ -397,21 +397,21 @@ void decrypt(unsigned int * msg_enc, unsigned int * msg_dec, unsigned int * key)
 	AES_PTR[14] = 0x00000000;
 
 	// printing key, enc, dec, start, and end values
-	printf("\nFINAL REG CONTENTS:\n");
-	for(i = 0; i < MAT_SIZE; ++i) {
-			if(i % 4 == 0) {
-				printf("\n");
-				if(!i)
-					printf("REG 0-3 (KEY): ");
-				else if(i == 4)
-					printf("REG 4-7 (MSG ENC): ");
-				else if(i == 8)
-					printf("REG 8-11 (MSG DEC): ");
-				else
-					printf("REG 12-15 (START, END): ");
-			}
-			printf("%08x", AES_PTR[i]);
-		}
+//	printf("\nFINAL REG CONTENTS:\n");
+//	for(i = 0; i < MAT_SIZE; ++i) {
+//			if(i % 4 == 0) {
+//				printf("\n");
+//				if(!i)
+//					printf("REG 0-3 (KEY): ");
+//				else if(i == 4)
+//					printf("REG 4-7 (MSG ENC): ");
+//				else if(i == 8)
+//					printf("REG 8-11 (MSG DEC): ");
+//				else
+//					printf("REG 12-15 (START, END): ");
+//			}
+//			printf("%08x", AES_PTR[i]);
+//		}
 
 }
 
@@ -444,7 +444,7 @@ int main()
 			scanf("%s", key_ascii);
 			printf("\n");
 			encrypt(msg_ascii, key_ascii, msg_enc, key);
-			printf("\nEncrpted message is: \n");
+			printf("\nEncrypted message is: \n");
 			for(i = 0; i < 4; i++){
 				printf("%08x", msg_enc[i]);
 			}
@@ -487,10 +487,25 @@ int main()
 		double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 		double speed = size_KB / time_spent;
 		printf("Software Encryption Speed: %f KB/s \n", speed);
+
+
+		// setting values into AES Decryption Core to display on HEX displays
+		for(i = 0; i < WORD_MAT; ++i) {
+				AES_PTR[i] = key[i];
+		}
+
+		for(i = WORD_MAT; i < 8; ++i) {
+				AES_PTR[i] = msg_enc[i-4];
+		}
+
+		// I forgot to do this and it took me forever to figure out why I had an infinite loop in decryption method
+		AES_PTR[14] = 0x00000001;
+
 		// Run Decryption
 		begin = clock();
-		for (i = 0; i < size_KB * 64; i++)
+		for (i = 0; i < size_KB * 64; i++) {
 			decrypt(msg_enc, msg_dec, key);
+		}
 		end = clock();
 		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 		speed = size_KB / time_spent;
